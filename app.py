@@ -20,11 +20,11 @@ def main():
         # 2. Procesar archivos para obtener semanas disponibles
         df_temp = pd.read_excel(defect_file, header=1)
         fechainicio = pd.to_datetime("2025-06-30")
-        df_temp["semana_relativa"] = (((df_temp['Date:'] - fechainicio).dt.days // 7) + 1).astype("Int64")
+        df_temp["semana_relativa"] = (((df_temp['Date:'] - fechainicio).dt.days // 7) + 1)
         df_temp["Historical Week"] = 'Week ' + df_temp["semana_relativa"].astype(str)
         
         # 3. Selector de semana con semanas reales disponibles
-        semanas_disponibles = sorted(df_temp['Historical Week'].unique().astype("Int64"))
+        semanas_disponibles = sorted(df_temp['Historical Week'].unique())
         semana_seleccionada = st.selectbox(
             "Selecciona la semana a analizar:",
             options=semanas_disponibles,
