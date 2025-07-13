@@ -9,6 +9,45 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import io
 
+def main():
+    st.title("📊 Reporte de Defectos por Semana")
+    
+    # 1. Subida de archivos
+    defect_file = st.file_uploader("Archivo de Defectos (Excel)", type=['xlsx', 'xls'])
+    production_file = st.file_uploader("Archivo de Producción (CSV)", type=["csv"])
+    
+    if defect_file and production_file:
+        # 2. Procesar archivos para obtener semanas disponibles
+        df_temp = pd.read_excel(defect_file, header=1)
+        fechainicio = pd.to_datetime("2025-06-30")
+        df_temp["semana_relativa"] = (((df_temp['Date:'] - fechainicio).dt.days // 7) + 1)
+        df_temp["Historical Week"] = 'Week ' + df_temp["semana_relativa"].astype(str)
+        
+        # 3. Selector de semana con semanas reales disponibles
+        semanas_disponibles = sorted(df_temp['Historical Week'].unique())
+        semana_seleccionada = st.selectbox(
+            "Selecciona la semana a analizar:",
+            options=semanas_disponibles,
+            index=len(semanas_disponibles)-1  # Última semana por defecto
+        )
+        
+        # 4. Generar reporte
+        if st.button("Generar Reporte"):
+            with st.spinner(f"Generando reporte para {semana_seleccionada}..."):
+                try:
+                    pdf_buffer = procesar_archivos(defect_file, production_file, semana_seleccionada)
+                    
+                    st.success("¡Reporte generado con éxito!")
+                    st.download_button(
+                        label="⬇️ Descargar Reporte",
+                        data=pdf_buffer,
+                        file_name=f"reporte_{semana_seleccionada.lower().replace(' ', '_')}.pdf",
+                        mime="application/pdf"
+                    )
+                except Exception as e:
+                    st.error(f"Error al generar el reporte: {str(e)}")
+
+
 # Función para dibujar el fondo
 def draw_cover(canvas, doc):
     width, height = doc.pagesize
@@ -21,7 +60,7 @@ def draw_cover(canvas, doc):
     canvas.drawCentredString(width / 2, height / 2 + 20, "Defects & Warranty")
     canvas.drawCentredString(width / 2, height / 2 - 35, "Report")
 
-def procesar_archivos(defectFile, productionFile):
+def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df= pd.read_excel(defectFile, header=1)
     fechainicio = pd.to_datetime("2025-06-30")
     fechainicio2 = pd.to_datetime("2024-12-30")
@@ -29,6 +68,10 @@ def procesar_archivos(defectFile, productionFile):
     df["Historical Week"] = 'Week ' + df["semana_relativa"].astype(str) 
     df["semana_natural"] = (((df["Date:"] - fechainicio2).dt.days // 7) + 1).astype("Int64")
     df["Year Week"] = 'Week ' + df["semana_natural"].astype(str)
+
+    # Filtrar por semana seleccionada
+    df = df[df['Historical Week'] == semana_seleccionada].copy()
+
     first_nan_index = df[df[["Date:"]].isnull().any(axis=1)].index.min()
     df = df.iloc[:first_nan_index, :]
 
@@ -858,31 +901,7 @@ def procesar_archivos(defectFile, productionFile):
     pdf_buffer.seek(0)
     return pdf_buffer
 
-def main():
-    st.title("📊 Generador de Reporte de Defectos y Garantías")
-    
-    # Subida de archivos
-    defect_file = st.file_uploader("Archivo de Defectos (Excel)", type=['xlsx', 'xls'])
-    production_file = st.file_uploader("Archivo de Producción (CSV)", type=["csv"])
-    
-    if defect_file and production_file:
-        with st.spinner('Generando reporte...'):
-            try:
-                # Procesar archivos y obtener el PDF en bytes
-                pdf_bytes = procesar_archivos(defect_file, production_file)
-                
-                # Mostrar botón de descarga
-                st.download_button(
-                    label="⬇️ Descargar Reporte",
-                    data=pdf_bytes,
-                    file_name="reporte_defectos.pdf",
-                    mime="application/pdf"
-                )
-                
-                st.success("¡Reporte generado con éxito!")
-                
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()
