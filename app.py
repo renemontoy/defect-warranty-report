@@ -91,8 +91,8 @@ def procesar_archivos(defectFile, productionFile):
             "Staged", "Make / Model", "Claim Type (Description)", "Type", "Pod Number", "Original Sales Order Date" ]]
 
     #Crear PDF
-    doc = SimpleDocTemplate("Defects_Warranty.pdf", pagesize = landscape(letter))
-    styles = getSampleStyleSheet()
+    pdf_buffer = io.BytesIO()
+    doc = SimpleDocTemplate(pdf_buffer, pagesize = landscape(letter))
     story = []
     story.append(PageBreak())
     table_style = [
@@ -854,7 +854,9 @@ def procesar_archivos(defectFile, productionFile):
     # Guardar
     doc.build(story, onFirstPage=draw_cover)
 
-    return doc
+    # Obtener los bytes del PDF
+    pdf_buffer.seek(0)
+    return pdf_buffer
 
 def main():
     st.title("📊 Generador de Reporte de Defectos y Garantías")
@@ -881,24 +883,6 @@ def main():
                 
             except Exception as e:
                 st.error(f"Error: {str(e)}")
-
-def procesar_archivos(defect_file, production_file):
-    # Crear buffer para el PDF
-    pdf_buffer = io.BytesIO()
-    
-    # Configurar el documento
-    doc = SimpleDocTemplate(pdf_buffer, pagesize=letter)
-    
-    # Aquí tu lógica de procesamiento...
-    story = []
-    # story.append(...) - Agrega todos tus elementos al story
-    
-    # Construir el PDF
-    doc.build(story)
-    
-    # Obtener los bytes del PDF
-    pdf_buffer.seek(0)
-    return pdf_buffer
 
 if __name__ == "__main__":
     main()
