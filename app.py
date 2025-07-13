@@ -68,10 +68,6 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df["Historical Week"] = 'Week ' + df["semana_relativa"].astype(str) 
     df["semana_natural"] = (((df["Date:"] - fechainicio2).dt.days // 7) + 1).astype("Int64")
     df["Year Week"] = 'Week ' + df["semana_natural"].astype(str)
-
-    # Filtrar por semana seleccionada
-    df = df[df['Historical Week'] == semana_seleccionada].copy()
-
     first_nan_index = df[df[["Date:"]].isnull().any(axis=1)].index.min()
     df = df.iloc[:first_nan_index, :]
 
@@ -127,7 +123,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         "Toe Dent" : "FRDEFECT"
 
     }
-    semana_actual = "Week 1"
+    semana_actual = semana_seleccionada
     df["Type"] = df["Claim Type (Description)"].map(defect_type)
 
     df = df[["Date:", "Historical Week", "Year Week", "Shipper:", "Original Order or Serial #", "RMA", "RC", "Status? (0,1,2)","Shipping Carrier","Tracking Number",
