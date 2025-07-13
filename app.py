@@ -858,60 +858,47 @@ def procesar_archivos(defectFile, productionFile):
 
 def main():
     st.title("📊 Generador de Reporte de Defectos y Garantías")
-    st.markdown("""
-    Sube los archivos necesarios para generar un reporte completo con análisis de defectos y garantías.
-    """)
     
-    # Subida de archivos con descripciones claras
-    with st.expander("📤 Subir archivos", expanded=True):
-        col1, col2 = st.columns(2)
-        with col1:
-            defect_file = st.file_uploader("Archivo de Defectos (Excel)", 
-                                         type=['xlsx', 'xls'],
-                                         help="Sube el archivo Excel con los datos de defectos")
-        with col2:
-            production_file = st.file_uploader("Archivo de Producción (CSV)", 
-                                             type=["csv"],
-                                             help="Sube el archivo CSV con los datos de producción")
+    # Subida de archivos
+    defect_file = st.file_uploader("Archivo de Defectos (Excel)", type=['xlsx', 'xls'])
+    production_file = st.file_uploader("Archivo de Producción (CSV)", type=["csv"])
     
-    # Procesamiento cuando ambos archivos están cargados
     if defect_file and production_file:
-        st.success("✅ Archivos cargados correctamente")
-        
-        with st.spinner('Procesando datos y generando reporte...'):
+        with st.spinner('Generando reporte...'):
             try:
-                # Procesar archivos y generar PDF
-                pdf = procesar_archivos(defect_file, production_file)
+                # Procesar archivos y obtener el PDF en bytes
+                pdf_bytes = procesar_archivos(defect_file, production_file)
                 
-                # Mostrar vista previa del PDF
-                st.subheader("Vista previa del reporte")
-                st.markdown("""
-                El reporte generado contiene:
-                - Análisis de defectos por semana
-                - Gráficos de tendencia
-                - Métricas clave de calidad
-                """)
-                
-                # Crear botón de descarga
-                pdf_output = io.BytesIO()
-                pdf.write(pdf_output)
-                pdf_output.seek(0)
-                
+                # Mostrar botón de descarga
                 st.download_button(
-                    label="⬇️ Descargar Reporte Completo (PDF)",
-                    data=pdf_output,
-                    file_name="reporte_defectos_garantias.pdf",
-                    mime="application/pdf",
-                    help="Descarga el reporte completo en formato PDF"
+                    label="⬇️ Descargar Reporte",
+                    data=pdf_bytes,
+                    file_name="reporte_defectos.pdf",
+                    mime="application/pdf"
                 )
                 
-                st.balloons()  # Efecto de celebración al completar
+                st.success("¡Reporte generado con éxito!")
                 
             except Exception as e:
-                st.error(f"❌ Error al procesar los archivos: {str(e)}")
-                st.error("Verifica que los archivos tengan el formato correcto")
-    else:
-        st.warning("⚠️ Por favor, sube ambos archivos para generar el reporte")
+                st.error(f"Error: {str(e)}")
+
+def procesar_archivos(defect_file, production_file):
+    # Crear buffer para el PDF
+    pdf_buffer = io.BytesIO()
+    
+    # Configurar el documento
+    doc = SimpleDocTemplate(pdf_buffer, pagesize=letter)
+    
+    # Aquí tu lógica de procesamiento...
+    story = []
+    # story.append(...) - Agrega todos tus elementos al story
+    
+    # Construir el PDF
+    doc.build(story)
+    
+    # Obtener los bytes del PDF
+    pdf_buffer.seek(0)
+    return pdf_buffer
 
 if __name__ == "__main__":
     main()
