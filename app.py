@@ -24,7 +24,7 @@ def main():
         df_temp["Historical Week"] = 'Week ' + df_temp["semana_relativa"].astype(str)
         
         # 3. Selector de semana con semanas reales disponibles
-        semanas_disponibles = sorted(df_temp['Historical Week'].unique())
+        semanas_disponibles = sorted(df_temp['Historical Week'].unique().astype("Int64"))
         semana_seleccionada = st.selectbox(
             "Selecciona la semana a analizar:",
             options=semanas_disponibles,
