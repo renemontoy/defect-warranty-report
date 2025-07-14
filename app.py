@@ -462,8 +462,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # Errores de Warranty
     orders = pd.crosstab(dfwarranty['Type'], dfwarranty['Historical Week'])
     # Division porcentual
-    orders_pct = (orders.div(weekly_orders_totals) * 100).round(1)
-    sum_pct = orders_pct.sum().round(1)
+    orders_pct = (orders.div(weekly_orders_totals) * 100)
+    sum_pct = orders_pct.sum()
 
     orders_data = [['Weekly Orders']]  # Título modificado
     orders_data += [['Type'] + orders_pct.columns.tolist()]
