@@ -286,7 +286,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_warranty_table = Table(avg_warranty_data, colWidths=[60,60], rowHeights=row_heights_avg_W)
     avg_warranty_table.setStyle(TableStyle(table_style_weeks))
     #Tabla 8 weeks
-    warranty8 = pd.crosstab(df4['Type'], df8['Historical Week'])
+    warranty8 = pd.crosstab(dfwarranty['Type'], df8['Historical Week'])
     warranty8.loc['Total'] = warranty8.sum(numeric_only=True)
     warranty8['TOTAL'] = warranty8[week_cols].sum(axis=1)
     non_null_weeks_warranty8 = warranty8[week_cols].notnull().sum(axis=1)
