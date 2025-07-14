@@ -515,7 +515,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     sum_pct_hist = orders_pct_hist.sum()
 
     orders_pct_hist['TOTAL'] = orders_pct_hist.sum(axis=1)
-    orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / num_semanas8).astype(float)
+    valid_weeks = orders_pct_hist.notnull().sum(axis=1)
+    orders_pct_hist['AVG'] = orders_pct_hist['TOTAL'] / valid_weeks.replace(0, 1) 
     avg_orders_pct_hist= orders_pct_hist[['AVG','TOTAL']].copy()
 
     #Formateo
@@ -526,8 +527,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_data_hist = [['Runnig Total']]
     avg_orders_data_hist += [list(avg_orders_pct_hist.columns)]
     avg_orders_data_hist += avg_orders_pct_hist.values.tolist()
-    avg_weekly_pct_hist = orders_pct_hist.mean().sum()
-    total_errors_hist = sum_pct_hist.sum()
+    avg_weekly_pct_hist = orders_pct_hist[orders_hist.columns].mean().sum()
+    total_errors_hist = orders_pct_hist[orders_hist.columns].sum().sum() 
     avg_orders_data_hist.append([
         f"{avg_weekly_pct_hist.mean().round(1)}%",  
         f"{total_errors_hist.mean().round(1)}%"           
