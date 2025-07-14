@@ -510,23 +510,14 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     weekly_orders_totals_hist = df_weekly8.set_index('Week')['Total Orders']
     # Errores de Warranty
     orders_hist = pd.crosstab(dfwarranty['Type'], df['Historical Week'])
-    # 3. Verificar y alinear las semanas
-    common_weeks = list(set(orders_hist.columns) & set(weekly_orders_totals_hist.index))
-    orders_hist = orders_hist[common_weeks]
-    weekly_orders_totals_hist = weekly_orders_totals_hist[common_weeks]
+    # Division porcentual
+    orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
 
-    # 4. Calcular porcentajes (SIN multiplicar por 100 todavía)
-    orders_pct_hist = orders_hist.div(weekly_orders_totals_hist)
-
-    # 5. Calcular totales y promedios correctamente
     orders_pct_hist['TOTAL'] = orders_pct_hist.sum(axis=1)
-    valid_weeks = orders_pct_hist[common_weeks].notnull().sum(axis=1).replace(0, 1)  # Evitar división por cero
+    valid_weeks = orders_pct_hist.notnull().sum(axis=1) -1
+    orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / valid_weeks).astype(float)
+    avg_orders_pct_hist= orders_pct_hist[['AVG','TOTAL']].copy()
 
-    # 6. Calcular promedio (aquí multiplicamos por 100 para convertir a porcentaje)
-    orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / valid_weeks) * 100
-
-    # 7. Seleccionar y formatear columnas finales
-    avg_orders_pct_hist = orders_pct_hist[['AVG','TOTAL']].copy()
     #Formateo
     avg_orders_pct_hist['AVG'] = (avg_orders_pct_hist['AVG']).round(1).astype(str) + '%'
     avg_orders_pct_hist['TOTAL'] = (avg_orders_pct_hist['TOTAL']).round(1).astype(str) + '%'
