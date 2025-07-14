@@ -468,7 +468,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     orders_data = [['Weekly Orders']]  # Título modificado
     orders_data += [['Type'] + orders_pct.columns.tolist()]
     for idx, row in orders_pct.iterrows():
-        formatted_values = [f"{val}%" if not pd.isna(val) else "0%" for val in row]
+        formatted_values = [f"{round(val, 1)}%" if not pd.isna(val) else "0%" for val in row]
         orders_data.append([idx] + formatted_values)
 
     # 5. Añadir fila de totales (opcional)
