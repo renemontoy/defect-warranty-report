@@ -149,7 +149,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('FONTSIZE', (0,0), (-1,-1), 9), 
         ('BACKGROUND', (0,0), (-1,0), rl_colors.darkgrey),
         ('ALIGN',(0,0),(-1,0),'CENTER'),
-        ('FONTNAME',(0,0),(-1,1),'Helvetica-Bold'),
+        ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),
         ('ALIGN',(1,1),(-1,-1),'CENTER'),
         ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
         ('GRID',(0,0),(-1,-1),0.5,rl_colors.black),
