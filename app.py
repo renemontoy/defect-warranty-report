@@ -231,6 +231,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     current_week_num = int(semana_seleccionada.replace('Week ', ''))
     fourweeks = [f'Week {i}' for i in range(current_week_num-3, current_week_num+1)]
     eightweeks = [f'Week {i}' for i in range(current_week_num-7, current_week_num+1)]
+    all_previous_weeks = [f'Week {i}' for i in range(1, current_week_num + 1)]
+    df = df[df['Historical Week'].isin(all_previous_weeks)]
     df8 = df[df['Historical Week'].isin(eightweeks)]
     df4 = df[df['Historical Week'].isin(fourweeks)]
 
