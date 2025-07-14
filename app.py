@@ -50,7 +50,7 @@ def main():
                     st.download_button(
                         label="⬇️ Download Report",
                         data=pdf_buffer,
-                        file_name=f"Defect & Warranty Report{semana_seleccionada.lower().replace(' ', '_')}.pdf",
+                        file_name=f"Defect & Warranty Report {semana_seleccionada.lower().replace(' ', '_')}.pdf",
                         mime="application/pdf"
                     )
                 except Exception as e:
