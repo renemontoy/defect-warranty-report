@@ -259,8 +259,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(joined_staged)
 
     #Warranty Details
-    dfwarranty = df[df['Staged'] == 'Warranty']
-    warranty = pd.crosstab(dfwarranty['Type'], df4['Historical Week'])
+    dfwarranty = df4[df4['Staged'] == 'Warranty']
+    warranty = pd.crosstab(dfwarranty['Type'], dfwarranty['Historical Week'])
     warranty.loc['Total'] = warranty.sum(numeric_only=True)
     warranty_data = [['Warranty Details']]
     warranty_data += [['Type'] + warranty.columns.tolist()]
@@ -286,7 +286,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_warranty_table = Table(avg_warranty_data, colWidths=[60,60], rowHeights=row_heights_avg_W)
     avg_warranty_table.setStyle(TableStyle(table_style_weeks))
     #Tabla 8 weeks
-    warranty8 = pd.crosstab(dfwarranty['Type'], df8['Historical Week'])
+    dfwarranty8 = df8[df8['Staged'] == 'Warranty']
+    warranty8 = pd.crosstab(dfwarranty8['Type'], df8['Historical Week'])
     warranty8.loc['Total'] = warranty8.sum(numeric_only=True)
     warranty8['TOTAL'] = warranty8[week_cols].sum(axis=1)
     non_null_weeks_warranty8 = warranty8[week_cols].notnull().sum(axis=1)
@@ -514,7 +515,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
 
     orders_pct_hist['TOTAL'] = orders_pct_hist.sum(axis=1)
-    valid_weeks = orders_pct_hist.notnull().sum(axis=1) -1
+    valid_weeks = orders_pct_hist.notnull().sum(axis=1)
     orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / valid_weeks).astype(float)
     avg_orders_pct_hist= orders_pct_hist[['AVG','TOTAL']].copy()
 
