@@ -350,6 +350,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_transposed["Year Week"] = 'Week ' + df_transposed["semana_natural"].astype(str)
     df_transposed = df_transposed[['Fecha', 'Historical Week','Year Week','Orders', 'ShippedQty',]]
 
+    df_transposed = df_transposed[df_transposed['Historical Week'].isin(all_previous_weeks)]
     prod4 = df_transposed[df_transposed['Historical Week'].isin(fourweeks)]
     prod8 = df_transposed[df_transposed['Historical Week'].isin(eightweeks)]
 
@@ -464,7 +465,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     orders_pct = (orders.div(weekly_orders_totals) * 100).round(1)
     sum_pct = orders_pct.sum().round(1)
 
-    orders_data = [['Weekly Errors']]  # Título modificado
+    orders_data = [['Weekly Orders']]  # Título modificado
     orders_data += [['Type'] + orders_pct.columns.tolist()]
     for idx, row in orders_pct.iterrows():
         formatted_values = [f"{val}%" if not pd.isna(val) else "0%" for val in row]
