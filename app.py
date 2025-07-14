@@ -57,17 +57,7 @@ def main():
                     st.error(f"Error al generar el reporte: {str(e)}")
 
 
-# Función para dibujar el fondo
-def draw_cover(canvas, doc, semana_seleccionada):
-    width, height = doc.pagesize
-    canvas.setFillColor(rl_colors.lightgrey)
-    canvas.rect(0, 0, width, height, fill=1, stroke=0)
 
-    # Título centrado
-    canvas.setFont("Helvetica", 50)
-    canvas.setFillColor(rl_colors.black)
-    canvas.drawCentredString(width / 2, height / 2 + 20, "Defects & Warranty")
-    canvas.drawCentredString(width / 2, height / 2 - 35, f"Report {semana_seleccionada}")
     
 
 def procesar_archivos(defectFile, productionFile, semana_seleccionada):
@@ -905,6 +895,19 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # Insertar la imagen (gráfica)
     story.append(Spacer(width=0, height=1.5*cm))
     story.append(Image("graphic2.png", width=750, height=300)) 
+
+        # Función para dibujar el fondo
+    def draw_cover(canvas, doc):
+        width, height = doc.pagesize
+        canvas.setFillColor(rl_colors.lightgrey)
+        canvas.rect(0, 0, width, height, fill=1, stroke=0)
+
+        # Título centrado
+        canvas.setFont("Helvetica", 50)
+        canvas.setFillColor(rl_colors.black)
+        canvas.drawCentredString(width / 2, height / 2 + 20, "Defects & Warranty")
+        canvas.drawCentredString(width / 2, height / 2 - 35, f"Report {semana_seleccionada}")
+
     # Guardar
     doc.build(story, onFirstPage=draw_cover)
 
