@@ -906,7 +906,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         canvas.setFont("Helvetica", 50)
         canvas.setFillColor(rl_colors.black)
         canvas.drawCentredString(width / 2, height / 2 + 20, "Defects & Warranty")
-        canvas.drawCentredString(width / 2, height / 2 - 35, f"Report {semana_seleccionada}")
+        canvas.drawCentredString(width / 2, height / 2 - 35, f"{semana_seleccionada}")
 
     # Guardar
     doc.build(story, onFirstPage=draw_cover)
