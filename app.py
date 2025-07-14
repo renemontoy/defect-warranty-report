@@ -21,21 +21,30 @@ def main():
         df_temp = pd.read_excel(defect_file, header=1)
         fechainicio = pd.to_datetime("2025-06-30")
         df_temp["semana_relativa"] = (((df_temp['Date:'] - fechainicio).dt.days // 7) + 1).astype("Int64")
-        df_temp["Historical Week"] = 'Week ' + df_temp["semana_relativa"].astype(str)
+        df_temp = df_temp.dropna(subset=['semana_relativa'])
+        df_temp["semana_relativa"] = df_temp["semana_relativa"].astype(int)  # Forzar enteros
+        
+        # Crear columna de semana con formato consistente
+        df_temp["Historical Week"] = 'Week ' + df_temp["semana_relativa"].astype(str).str.replace(r'\.0$', '', regex=True)
         
         # 3. Selector de semana con semanas reales disponibles
         semanas_disponibles = sorted(df_temp['Historical Week'].unique())
+        if not semanas_disponibles:
+            st.error("No se encontraron semanas válidas en el archivo")
+            return
+            
         semana_seleccionada = st.selectbox(
             "Selecciona la semana a analizar:",
             options=semanas_disponibles,
-            index=len(semanas_disponibles)-1  # Última semana por defecto
+            index=len(semanas_disponibles)-1
         )
-        
+         
         # 4. Generar reporte
         if st.button("Generar Reporte"):
             with st.spinner(f"Generando reporte para {semana_seleccionada}..."):
                 try:
-                    pdf_buffer = procesar_archivos(defect_file, production_file, semana_seleccionada)
+                    # Pasar el DataFrame temporal para mantener consistencia
+                    pdf_buffer = procesar_archivos(defect_file, production_file, semana_seleccionada, df_temp)
                     
                     st.success("¡Reporte generado con éxito!")
                     st.download_button(
@@ -70,6 +79,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df["Year Week"] = 'Week ' + df["semana_natural"].astype(str)
     first_nan_index = df[df[["Date:"]].isnull().any(axis=1)].index.min()
     df = df.iloc[:first_nan_index, :]
+
+    semana_actual = semana_seleccionada
 
     #Catalogo de defectos
     defect_type = {
@@ -123,7 +134,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         "Toe Dent" : "FRDEFECT"
 
     }
-    semana_actual = semana_seleccionada
+    
     df["Type"] = df["Claim Type (Description)"].map(defect_type)
 
     df = df[["Date:", "Historical Week", "Year Week", "Shipper:", "Original Order or Serial #", "RMA", "RC", "Status? (0,1,2)","Shipping Carrier","Tracking Number",
@@ -647,7 +658,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(PageBreak())
 
     #TABLA SEMANA ACTUAL
-    df_semana_actual = df[df['Historical Week'] == semana_actual] 
+    df_semana_actual = df[df['Historical Week'].str.strip() == semana_actual.strip()].copy()
     df_semana_actual = df_semana_actual[["Date:", "Historical Week",  "Shipper:", "Original Order or Serial #","RMA", "RC","Shipping Carrier","Staged", "Claim Type (Description)", "Type"]]
     df_semana_actual['Date:'] = pd.to_datetime(df_semana_actual['Date:']).dt.strftime('%m/%d/%Y')
     rename_columns = {
