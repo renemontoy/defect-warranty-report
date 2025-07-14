@@ -526,7 +526,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_data_hist = [['Runnig Total']]
     avg_orders_data_hist += [list(avg_orders_pct_hist.columns)]
     avg_orders_data_hist += avg_orders_pct_hist.values.tolist()
-    avg_weekly_pct_hist = (sum_pct_hist / num_semanas8)
+    avg_weekly_pct_hist = orders_pct_hist.mean().sum()
     total_errors_hist = sum_pct_hist.sum()
     avg_orders_data_hist.append([
         f"{avg_weekly_pct_hist.mean().round(1)}%",  
