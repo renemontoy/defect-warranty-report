@@ -68,6 +68,7 @@ def draw_cover(canvas, doc):
     canvas.setFillColor(rl_colors.black)
     canvas.drawCentredString(width / 2, height / 2 + 20, "Defects & Warranty")
     canvas.drawCentredString(width / 2, height / 2 - 35, "Report")
+    
 
 def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df= pd.read_excel(defectFile, header=1)
@@ -227,8 +228,9 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('BACKGROUND', (0,-2), (-1,-1), rl_colors.lightgrey),
         ('FONTNAME',(0,-2),(-1,-1),'Helvetica-Bold'),
     ]
-    fourweeks = sorted(df['Historical Week'].unique())[-4:]
-    eightweeks = sorted(df['Historical Week'].unique())[-8:]
+    current_week_num = int(semana_seleccionada.replace('Week ', ''))
+    fourweeks = [f'Week {i}' for i in range(current_week_num-3, current_week_num+1)]
+    eightweeks = [f'Week {i}' for i in range(current_week_num-7, current_week_num+1)]
     df8 = df[df['Historical Week'].isin(eightweeks)]
     df4 = df[df['Historical Week'].isin(fourweeks)]
 
