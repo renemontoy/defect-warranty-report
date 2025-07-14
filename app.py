@@ -472,7 +472,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         orders_data.append([idx] + formatted_values)
 
     # 5. Añadir fila de totales (opcional)
-    orders_data.append(['Order Quality'] + [f"{x}%" for x in sum_pct])
+    orders_data.append(['Order Quality'] + [f"{round(x, 1)}%" for x in sum_pct])
     num_filas = len(orders_data)
     row_heights = [13] * num_filas 
     #Tabla
