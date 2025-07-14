@@ -10,11 +10,11 @@ import streamlit as st
 import io
 
 def main():
-    st.title("📊 Reporte de Defectos por Semana")
+    st.title("📊 Defect and Warranty Report System")
     
     # 1. Subida de archivos
-    defect_file = st.file_uploader("Archivo de Defectos (Excel)", type=['xlsx', 'xls'])
-    production_file = st.file_uploader("Archivo de Producción (CSV)", type=["csv"])
+    defect_file = st.file_uploader("Defect (Excel)", type=['xlsx', 'xls'])
+    production_file = st.file_uploader("Production by Date from Tableu (CSV)", type=["csv"])
     
     if defect_file and production_file:
         # 2. Procesar archivos para obtener semanas disponibles
@@ -34,7 +34,7 @@ def main():
             return
             
         semana_seleccionada = st.selectbox(
-            "Selecciona la semana a analizar:",
+            "Select Week:",
             options=semanas_disponibles,
             index=len(semanas_disponibles)-1
         )
@@ -46,9 +46,9 @@ def main():
                     # Pasar el DataFrame temporal para mantener consistencia
                     pdf_buffer = procesar_archivos(defect_file, production_file, semana_seleccionada)
                     
-                    st.success("¡Reporte generado con éxito!")
+                    st.success("Report created successfully!")
                     st.download_button(
-                        label="⬇️ Descargar Reporte",
+                        label="⬇️ Download Report",
                         data=pdf_buffer,
                         file_name=f"reporte_{semana_seleccionada.lower().replace(' ', '_')}.pdf",
                         mime="application/pdf"
