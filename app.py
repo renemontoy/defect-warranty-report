@@ -493,7 +493,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_data = [['Last 4 Weeks']]
     avg_orders_data += [list(avg_orders_pct.columns)]
     avg_orders_data += avg_orders_pct.values.tolist()
-    avg_weekly_pct = avg_orders_data.sum()
+    avg_weekly_pct = sum_pct[week_cols].mean(axis=1).sum()
     total_errors = sum_pct[week_cols].sum()
     avg_orders_data.append([
         f"{avg_weekly_pct.mean().round(1)}%",  
