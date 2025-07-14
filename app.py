@@ -259,8 +259,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(joined_staged)
 
     #Warranty Details
-    dfwarranty = df4[df4['Staged'] == 'Warranty']
-    warranty = pd.crosstab(dfwarranty['Type'], dfwarranty['Historical Week'])
+    dfwarranty = df[df['Staged'] == 'Warranty']
+    warranty = pd.crosstab(dfwarranty['Type'], df4['Historical Week'])
     warranty.loc['Total'] = warranty.sum(numeric_only=True)
     warranty_data = [['Warranty Details']]
     warranty_data += [['Type'] + warranty.columns.tolist()]
