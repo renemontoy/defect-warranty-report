@@ -515,7 +515,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     sum_pct_hist = orders_pct_hist.sum()
 
     orders_pct_hist['TOTAL'] = orders_pct_hist.sum(axis=1)
-    orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / num_semanas8).round(1).astype(float)
+    orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / num_semanas8).astype(float)
     avg_orders_pct_hist= orders_pct_hist[['AVG','TOTAL']].copy()
 
     #Formateo
