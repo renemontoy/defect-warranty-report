@@ -486,7 +486,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_pct= orders_pct[['AVG','TOTAL']].copy()
 
     #Formateo
-    avg_orders_pct['AVG'] = (avg_orders_pct['AVG']).astype(str) + '%'
+    avg_orders_pct['AVG'] = (avg_orders_pct['AVG']).round(1).astype(str) + '%'
     avg_orders_pct['TOTAL'] = (avg_orders_pct['TOTAL']).round(1).astype(str) + '%'
 
     #Tabla 4 weeks
