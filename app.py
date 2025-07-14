@@ -44,7 +44,7 @@ def main():
             with st.spinner(f"Generando reporte para {semana_seleccionada}..."):
                 try:
                     # Pasar el DataFrame temporal para mantener consistencia
-                    pdf_buffer = procesar_archivos(defect_file, production_file, semana_seleccionada, df_temp)
+                    pdf_buffer = procesar_archivos(defect_file, production_file, semana_seleccionada)
                     
                     st.success("¡Reporte generado con éxito!")
                     st.download_button(
