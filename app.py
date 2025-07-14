@@ -50,12 +50,12 @@ def main():
                     st.download_button(
                         label="⬇️ Download Report",
                         data=pdf_buffer,
-                        file_name=f"reporte_{semana_seleccionada.lower().replace(' ', '_')}.pdf",
+                        file_name=f"Defect & Warranty Report{semana_seleccionada.lower().replace(' ', '_')}.pdf",
                         mime="application/pdf"
                     )
                 except Exception as e:
-                    st.error(f"Error al generar el reporte: {str(e)}")
-
+                    st.error(f"Error generating the report: {str(e)}")
+ 
 
 def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df= pd.read_excel(defectFile, header=1)
