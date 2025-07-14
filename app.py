@@ -505,8 +505,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_weekly_pct = (sum_pct / len(week_cols)).round(1) 
     total_errors = sum_pct[week_cols].sum().round(1)
     avg_orders_data.append([
-        f"{avg_weekly_pct.mean()}%",  
-        f"{total_errors.mean()}%"           
+        f"{avg_weekly_pct.mean().round(1)}%",  
+        f"{total_errors.mean().round(1)}%"           
     ])
     num_filas_avg_opct = len(avg_orders_data)
     row_heights_avg_opct = [13] * num_filas_avg_opct
@@ -538,8 +538,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_weekly_pct_hist = (sum_pct_hist / num_semanas8).round(1) 
     total_errors_hist = sum_pct_hist.sum().round(1)
     avg_orders_data_hist.append([
-        f"{avg_weekly_pct_hist.mean()}%",  
-        f"{total_errors_hist.mean()}%"           
+        f"{avg_weekly_pct_hist.mean().round(1)}%",  
+        f"{total_errors_hist.mean().round(1)}%"           
     ])
     num_filas_avg_opct_hist = len(avg_orders_data_hist)
     row_heights_avg_opct_hist = [13] * num_filas_avg_opct_hist
