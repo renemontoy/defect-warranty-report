@@ -259,7 +259,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(joined_staged)
 
     #Warranty Details
-    warranty = pd.crosstab(df4['Type'], df4['Historical Week'])
+    dfwarranty = df4[df4['Staged'] == 'Warranty']
+    warranty = pd.crosstab(dfwarranty['Type'], dfwarranty['Historical Week'])
     warranty.loc['Total'] = warranty.sum(numeric_only=True)
     warranty_data = [['Warranty Details']]
     warranty_data += [['Type'] + warranty.columns.tolist()]
@@ -650,6 +651,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
 
     #TABLA SEMANA ACTUAL
     df_semana_actual = df[df['Historical Week'].str.strip() == semana_actual.strip()].copy()
+    df_semana_actual = df_semana_actual[df_semana_actual['Staged'] == 'Warranty']
     df_semana_actual = df_semana_actual[["Date:", "Historical Week",  "Shipper:", "Original Order or Serial #","RMA", "RC","Shipping Carrier","Staged", "Claim Type (Description)", "Type"]]
     df_semana_actual['Date:'] = pd.to_datetime(df_semana_actual['Date:']).dt.strftime('%m/%d/%Y')
     rename_columns = {
