@@ -486,7 +486,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_pct= orders_pct[['AVG','TOTAL']].copy()
 
     #Formateo
-    avg_orders_pct['AVG'] = (avg_orders_pct['AVG']).round(1).astype(str) + '%'
+    avg_orders_pct['AVG'] = (avg_orders_pct['AVG']).astype(str) + '%'
     avg_orders_pct['TOTAL'] = (avg_orders_pct['TOTAL']).round(1).astype(str) + '%'
 
     #Tabla 4 weeks
@@ -496,7 +496,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_weekly_pct = orders_pct[week_cols].mean().sum()
     total_errors = sum_pct[week_cols].sum()
     avg_orders_data.append([
-        f"{avg_weekly_pct.mean()}%",  
+        f"{avg_weekly_pct.mean().round(1)}%",  
         f"{total_errors.mean().round(1)}%"           
     ])
     num_filas_avg_opct = len(avg_orders_data)
