@@ -289,7 +289,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     dfwarranty8 = df8[df8['Staged'] == 'Warranty']
     warranty8 = pd.crosstab(dfwarranty8['Type'], df8['Historical Week'])
     warranty8.loc['Total'] = warranty8.sum(numeric_only=True)
-    week_cols8 = [col for col in dfwarranty8.columns if col.startswith('Week')]
+    week_cols8 = [col for col in warranty8.columns if col.startswith('Week')]
     warranty8['TOTAL'] = warranty8[week_cols8].sum(axis=1)
     non_null_weeks_warranty8 = warranty8[week_cols8].notnull().sum(axis=1)
     warranty8['AVG'] = (warranty8['TOTAL'] / non_null_weeks_warranty8).round(0).astype(int)
