@@ -496,7 +496,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_weekly_pct = orders_pct[week_cols].mean().sum()
     total_errors = sum_pct[week_cols].sum()
     avg_orders_data.append([
-        f"{avg_weekly_pct.mean().round(1)}%",  
+        f"{avg_weekly_pct.mean()}%",  
         f"{total_errors.mean().round(1)}%"           
     ])
     num_filas_avg_opct = len(avg_orders_data)
@@ -512,7 +512,6 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     orders_hist = pd.crosstab(dfwarranty['Type'], df['Historical Week'])
     # Division porcentual
     orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
-    sum_pct_hist = orders_pct_hist.sum()
 
     orders_pct_hist['TOTAL'] = orders_pct_hist.sum(axis=1)
     valid_weeks = orders_pct_hist.notnull().sum(axis=1)
