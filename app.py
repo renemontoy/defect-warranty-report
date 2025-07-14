@@ -30,18 +30,18 @@ def main():
         # 3. Selector de semana con semanas reales disponibles
         semanas_disponibles = sorted(df_temp['Historical Week'].unique())
         if not semanas_disponibles:
-            st.error("No se encontraron semanas válidas en el archivo")
+            st.error("No valid weeks were found in the file.")
             return
             
         semana_seleccionada = st.selectbox(
-            "Select Week:",
+            "Select a Week:",
             options=semanas_disponibles,
             index=len(semanas_disponibles)-1
         )
          
         # 4. Generar reporte
-        if st.button("Generar Reporte"):
-            with st.spinner(f"Generando reporte para {semana_seleccionada}..."):
+        if st.button("Generate Report"):
+            with st.spinner(f"Generating Report for {semana_seleccionada}..."):
                 try:
                     # Pasar el DataFrame temporal para mantener consistencia
                     pdf_buffer = procesar_archivos(defect_file, production_file, semana_seleccionada)
@@ -56,9 +56,6 @@ def main():
                 except Exception as e:
                     st.error(f"Error al generar el reporte: {str(e)}")
 
-
-
-    
 
 def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df= pd.read_excel(defectFile, header=1)
