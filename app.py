@@ -698,205 +698,215 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(PageBreak())
 
     #Misbuilds
-    df_misbuild = df_semana_actual[df_semana_actual['Type'] == 'FRMISBUILD'] 
-    misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
-    misbuild_data += df_misbuild.values.tolist()    # Datos
-    misbuild_table = Table(misbuild_data)
-    misbuild_table.setStyle(TableStyle(table_style_semana_actual))
-    story.append(misbuild_table)
+    df_misbuild = df_semana_actual[df_semana_actual['Type'] == 'FRMISBUILD']
+    if df_misbuild.empty:
+    # Crear tabla vacía con estructura similar
+        misbuild_data = [['No misbuilds found this week']]
+        misbuild_table = Table(misbuild_data, colWidths=[400])
+        misbuild_table.setStyle(TableStyle([
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('FONTSIZE', (0,0), (-1,-1), 12),
+            ('TEXTCOLOR', (0,0), (-1,-1), colors.red)
+        ]))
+    else: 
+        misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
+        misbuild_data += df_misbuild.values.tolist()    # Datos
+        misbuild_table = Table(misbuild_data)
+        misbuild_table.setStyle(TableStyle(table_style_semana_actual))
+        story.append(misbuild_table)
 
-    count_misbuilds = df4[df4['Type'] == 'FRMISBUILD']
-    rename_columns_misbuilds = {
-        'Claim Type (Description)': 'Description',
-    }
-    count_misbuilds = count_misbuilds.rename(columns=rename_columns_misbuilds)
-    count_misbuilds = pd.crosstab(count_misbuilds['Description'], count_misbuilds['Historical Week'])
-    count_misbuilds.loc['Total'] = count_misbuilds.sum(numeric_only=True)
-    count_misbuilds_data =[['Count of Misbuilds']]
-    count_misbuilds_data += [['Description'] + count_misbuilds.columns.tolist()]
-    for idx, row in count_misbuilds.iterrows():
-        count_misbuilds_data.append([idx] + row.astype(int).astype(str).tolist())
-    #Tabla
-    num_filas_cm = len(count_misbuilds_data)
-    row_heights_cm = [13] * num_filas_cm
-    count_misbuilds_table = Table(count_misbuilds_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_cm)
-    count_misbuilds_table.setStyle(TableStyle(table_style))
+        count_misbuilds = df4[df4['Type'] == 'FRMISBUILD']
+        rename_columns_misbuilds = {
+            'Claim Type (Description)': 'Description',
+        }
+        count_misbuilds = count_misbuilds.rename(columns=rename_columns_misbuilds)
+        count_misbuilds = pd.crosstab(count_misbuilds['Description'], count_misbuilds['Historical Week'])
+        count_misbuilds.loc['Total'] = count_misbuilds.sum(numeric_only=True)
+        count_misbuilds_data =[['Count of Misbuilds']]
+        count_misbuilds_data += [['Description'] + count_misbuilds.columns.tolist()]
+        for idx, row in count_misbuilds.iterrows():
+            count_misbuilds_data.append([idx] + row.astype(int).astype(str).tolist())
+        #Tabla
+        num_filas_cm = len(count_misbuilds_data)
+        row_heights_cm = [13] * num_filas_cm
+        count_misbuilds_table = Table(count_misbuilds_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_cm)
+        count_misbuilds_table.setStyle(TableStyle(table_style))
 
-    #Avg Details
-    week_cols_cm = [col for col in count_misbuilds.columns if col.startswith('Week')]
-    count_misbuilds['TOTAL'] = count_misbuilds[week_cols_cm].sum(axis=1)
-    non_null_weeks_countm = count_misbuilds[week_cols_cm].notnull().sum(axis=1)
-    count_misbuilds['AVG'] = (count_misbuilds['TOTAL'] / non_null_weeks_countm).round(0).astype(int)
-    avg_cm = count_misbuilds[['AVG','TOTAL']].copy()
-    #Tabla 4 weeks
-    avg_cm_data = [['Last 4 Weeks']]
-    avg_cm_data += [list(avg_cm.columns)]
-    avg_cm_data += avg_cm.values.tolist()
-    num_filas_avg_cm = len(avg_cm_data)
-    row_heights_avg_cm = [13] * num_filas_avg_cm
-    avg_cm_table = Table(avg_cm_data, colWidths=[60,60], rowHeights=row_heights_avg_cm)
-    avg_cm_table.setStyle(TableStyle(table_style_weeks))
+        #Avg Details
+        week_cols_cm = [col for col in count_misbuilds.columns if col.startswith('Week')]
+        count_misbuilds['TOTAL'] = count_misbuilds[week_cols_cm].sum(axis=1)
+        non_null_weeks_countm = count_misbuilds[week_cols_cm].notnull().sum(axis=1)
+        count_misbuilds['AVG'] = (count_misbuilds['TOTAL'] / non_null_weeks_countm).round(0).astype(int)
+        avg_cm = count_misbuilds[['AVG','TOTAL']].copy()
+        #Tabla 4 weeks
+        avg_cm_data = [['Last 4 Weeks']]
+        avg_cm_data += [list(avg_cm.columns)]
+        avg_cm_data += avg_cm.values.tolist()
+        num_filas_avg_cm = len(avg_cm_data)
+        row_heights_avg_cm = [13] * num_filas_avg_cm
+        avg_cm_table = Table(avg_cm_data, colWidths=[60,60], rowHeights=row_heights_avg_cm)
+        avg_cm_table.setStyle(TableStyle(table_style_weeks))
 
-    story.append(Spacer(width=0, height=1.5*cm))
+        story.append(Spacer(width=0, height=1.5*cm))
 
-    joined_cm = Table([[count_misbuilds_table, avg_cm_table]])
-    story.append(joined_cm)
-    story.append(Spacer(width=0, height=1.5*cm))
-    # 1. Preparar los datos base (igual que antes)
-    prod_data_cm = [
-        ["Production data"],
-        ["", *df_weekly['Week'].tolist()], 
-        ["Start Date"] + df_weekly['Start Date'].tolist(),
-        ["End Date"] + df_weekly['End Date'].tolist(),
-        ["ASM Clubs"] + [f"{x:,.0f}" for x in df_weekly['Total ShippedQty']],
-        ["Orders"] + [f"{x:,.0f}" for x in df_weekly['Total Orders']]
-    ]
+        joined_cm = Table([[count_misbuilds_table, avg_cm_table]])
+        story.append(joined_cm)
+        story.append(Spacer(width=0, height=1.5*cm))
+        # 1. Preparar los datos base (igual que antes)
+        prod_data_cm = [
+            ["Production data"],
+            ["", *df_weekly['Week'].tolist()], 
+            ["Start Date"] + df_weekly['Start Date'].tolist(),
+            ["End Date"] + df_weekly['End Date'].tolist(),
+            ["ASM Clubs"] + [f"{x:,.0f}" for x in df_weekly['Total ShippedQty']],
+            ["Orders"] + [f"{x:,.0f}" for x in df_weekly['Total Orders']]
+        ]
 
-    # 2. Calcular las nuevas filas
-    misbuilds_per_orders = []
-    complemento_100 = []  # Nueva lista para 100% - Misbuilds/Orders
+        # 2. Calcular las nuevas filas
+        misbuilds_per_orders = []
+        complemento_100 = []  # Nueva lista para 100% - Misbuilds/Orders
 
-    for week in df_weekly['Week']:
-        # Obtener el valor numérico REAL de misbuilds (3 métodos seguros)
-        try:
-            # Método 1: Si count_misbuilds es un DataFrame
-            if isinstance(count_misbuilds, pd.DataFrame):
-                misbuilds = count_misbuilds.loc[week].iloc[0] if week in count_misbuilds.index else 0
-            # Método 2: Si es una Serie
-            elif isinstance(count_misbuilds, pd.Series):
-                misbuilds = count_misbuilds[week] if week in count_misbuilds.index else 0
-            # Método 3: Si es un diccionario u otro tipo
-            else:
-                misbuilds = count_misbuilds.get(week, 0)
-        except (KeyError, IndexError):
-            misbuilds = 0
-        
-        # Convertir a float explícitamente (seguro)
-        misbuilds = float(misbuilds)
-        
-        # Obtener orders (asegurarse que es un valor numérico)
-        orders = float(df_weekly[df_weekly['Week'] == week]['Total Orders'].iloc[0])
-        
-        # Calcular ratios con protección completa
-        ratio_orders = misbuilds / orders if orders != 0 else 0
-        ratio_complemento = (1 - ratio_orders) if orders != 0 else 1
-        
-        # Formatear (Misbuilds/Orders como decimal, complemento como porcentaje)
-        misbuilds_per_orders.append(f"{ratio_orders: .2%}")
-        complemento_100.append(f"{ratio_complemento:.2%}")  # Formato de porcentaje
+        for week in df_weekly['Week']:
+            # Obtener el valor numérico REAL de misbuilds (3 métodos seguros)
+            try:
+                # Método 1: Si count_misbuilds es un DataFrame
+                if isinstance(count_misbuilds, pd.DataFrame):
+                    misbuilds = count_misbuilds.loc[week].iloc[0] if week in count_misbuilds.index else 0
+                # Método 2: Si es una Serie
+                elif isinstance(count_misbuilds, pd.Series):
+                    misbuilds = count_misbuilds[week] if week in count_misbuilds.index else 0
+                # Método 3: Si es un diccionario u otro tipo
+                else:
+                    misbuilds = count_misbuilds.get(week, 0)
+            except (KeyError, IndexError):
+                misbuilds = 0
+            
+            # Convertir a float explícitamente (seguro)
+            misbuilds = float(misbuilds)
+            
+            # Obtener orders (asegurarse que es un valor numérico)
+            orders = float(df_weekly[df_weekly['Week'] == week]['Total Orders'].iloc[0])
+            
+            # Calcular ratios con protección completa
+            ratio_orders = misbuilds / orders if orders != 0 else 0
+            ratio_complemento = (1 - ratio_orders) if orders != 0 else 1
+            
+            # Formatear (Misbuilds/Orders como decimal, complemento como porcentaje)
+            misbuilds_per_orders.append(f"{ratio_orders: .2%}")
+            complemento_100.append(f"{ratio_complemento:.2%}")  # Formato de porcentaje
 
-    # 3. Agregar las filas a la tabla
-    prod_data_cm.append(["Misbuild of Orders"] + misbuilds_per_orders)
-    prod_data_cm.append(["Build Quality"] + complemento_100)  # Nueva fila modificada
+        # 3. Agregar las filas a la tabla
+        prod_data_cm.append(["Misbuild of Orders"] + misbuilds_per_orders)
+        prod_data_cm.append(["Build Quality"] + complemento_100)  # Nueva fila modificada
 
-    # 4. Crear la tabla con ReportLab
-    prod_cm_table = Table(
-        prod_data_cm,
-        colWidths=[100] + [60] * len(df_weekly),  # Ajusta según necesidad
-    )
-    prod_cm_table.setStyle(prod_style)
-    prod_cm_joined = Table([[prod_cm_table, '']])
-    story.append(prod_cm_joined)
+        # 4. Crear la tabla con ReportLab
+        prod_cm_table = Table(
+            prod_data_cm,
+            colWidths=[100] + [60] * len(df_weekly),  # Ajusta según necesidad
+        )
+        prod_cm_table.setStyle(prod_style)
+        prod_cm_joined = Table([[prod_cm_table, '']])
+        story.append(prod_cm_joined)
 
-    story.append(PageBreak())
+        story.append(PageBreak())
 
-    # HISTORICO MISBUILDS
-    count_misbuilds8 = df8[df8['Type'] == 'FRMISBUILD']
-    rename_columns_misbuilds8 = {
-        'Claim Type (Description)': 'Description',
-    }
-    count_misbuilds8 = count_misbuilds8.rename(columns=rename_columns_misbuilds8)
-    count_misbuilds8 = pd.crosstab(count_misbuilds8['Description'], count_misbuilds8['Historical Week'])
-    count_misbuilds8.loc['Total'] = count_misbuilds8.sum(numeric_only=True)
-    #count_misbuilds_data8 =[['Count of Misbuilds']]
-    count_misbuilds_data8 = [['Description'] + count_misbuilds8.columns.tolist()]
-    for idx, row in count_misbuilds8.iterrows():
-        count_misbuilds_data8.append([idx] + row.astype(int).astype(str).tolist())
+        # HISTORICO MISBUILDS
+        count_misbuilds8 = df8[df8['Type'] == 'FRMISBUILD']
+        rename_columns_misbuilds8 = {
+            'Claim Type (Description)': 'Description',
+        }
+        count_misbuilds8 = count_misbuilds8.rename(columns=rename_columns_misbuilds8)
+        count_misbuilds8 = pd.crosstab(count_misbuilds8['Description'], count_misbuilds8['Historical Week'])
+        count_misbuilds8.loc['Total'] = count_misbuilds8.sum(numeric_only=True)
+        #count_misbuilds_data8 =[['Count of Misbuilds']]
+        count_misbuilds_data8 = [['Description'] + count_misbuilds8.columns.tolist()]
+        for idx, row in count_misbuilds8.iterrows():
+            count_misbuilds_data8.append([idx] + row.astype(int).astype(str).tolist())
 
-    # 3. Crear tabla de historial
-    num_filas_misbuilds8 = len(count_misbuilds_data8)
-    row_heights_mis8 = [13] * num_filas_misbuilds8
-    count_misbuilds_table8 = Table(count_misbuilds_data8, colWidths=[120, 58, 58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_mis8)
-    count_misbuilds_table8.setStyle(TableStyle(table_style_graphic))
-    # 4. Calcular los datos de resumen
-    mb_last_8_weeks = count_misbuilds8.iloc[:, -8:].sum(axis=1) #if len(warranty_hist8.columns) <= 8 else pd.Series(0, index=warranty_hist8.index)
-    mb_weeks_5_to_8 = count_misbuilds8.iloc[:, -8:-4].sum(axis=1) #if len(warranty_hist8.columns) <= 8 else pd.Series(0, index=warranty_hist8.index)
-    mb_last_4_weeks = count_misbuilds8.iloc[:, -4:].sum(axis=1) #if len(warranty_hist8.columns) >= 4 else pd.Series(0, index=warranty_hist8.index)
+        # 3. Crear tabla de historial
+        num_filas_misbuilds8 = len(count_misbuilds_data8)
+        row_heights_mis8 = [13] * num_filas_misbuilds8
+        count_misbuilds_table8 = Table(count_misbuilds_data8, colWidths=[120, 58, 58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_mis8)
+        count_misbuilds_table8.setStyle(TableStyle(table_style_graphic))
+        # 4. Calcular los datos de resumen
+        mb_last_8_weeks = count_misbuilds8.iloc[:, -8:].sum(axis=1) #if len(warranty_hist8.columns) <= 8 else pd.Series(0, index=warranty_hist8.index)
+        mb_weeks_5_to_8 = count_misbuilds8.iloc[:, -8:-4].sum(axis=1) #if len(warranty_hist8.columns) <= 8 else pd.Series(0, index=warranty_hist8.index)
+        mb_last_4_weeks = count_misbuilds8.iloc[:, -4:].sum(axis=1) #if len(warranty_hist8.columns) >= 4 else pd.Series(0, index=warranty_hist8.index)
 
-    # 5. Preparar datos para la tabla de resumen
-    summary_data_mis8 = [['Last 4 Weeks', 'Weeks 5-8', 'Dif','Total']]
-    for idx in count_misbuilds8.index:
-        summary_data_mis8.append([
-            str(int(mb_last_4_weeks[idx])),
-            str(int(mb_weeks_5_to_8[idx])),
-            str(int(mb_last_4_weeks[idx])-int(mb_weeks_5_to_8[idx])),
-            str(int(mb_last_8_weeks[idx]))        
-        ])
+        # 5. Preparar datos para la tabla de resumen
+        summary_data_mis8 = [['Last 4 Weeks', 'Weeks 5-8', 'Dif','Total']]
+        for idx in count_misbuilds8.index:
+            summary_data_mis8.append([
+                str(int(mb_last_4_weeks[idx])),
+                str(int(mb_weeks_5_to_8[idx])),
+                str(int(mb_last_4_weeks[idx])-int(mb_weeks_5_to_8[idx])),
+                str(int(mb_last_8_weeks[idx]))        
+            ])
 
-    # 6. Crear tabla de resumen
-    summary_table_mis8 = Table(summary_data_mis8, colWidths=[58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_mis8)
-    summary_table_mis8.setStyle(TableStyle(table_style_graphic2))
-    graphic_joined_mis8 = Table([[count_misbuilds_table8, summary_table_mis8]])
-    story.append(graphic_joined_mis8)
+        # 6. Crear tabla de resumen
+        summary_table_mis8 = Table(summary_data_mis8, colWidths=[58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_mis8)
+        summary_table_mis8.setStyle(TableStyle(table_style_graphic2))
+        graphic_joined_mis8 = Table([[count_misbuilds_table8, summary_table_mis8]])
+        story.append(graphic_joined_mis8)
 
-    #GRAFICA
-    # Gráfico de líneas
-    misbuilds_counts = df[df['Type'] == 'FRMISBUILD'].groupby('Historical Week').size()
-    misbuilds_counts = misbuilds_counts.reindex(df_weekly['Week'], fill_value=0)
-    # 2. Calcular el promedio móvil de 4 semanas
-    misbuilds_4wk_avg = misbuilds_counts.rolling(window=4, min_periods=1).mean()
-    # Crear figura y eje principal (misbuilds)
-    fig, ax1 = plt.subplots(figsize=(12, 6))
+        #GRAFICA
+        # Gráfico de líneas
+        misbuilds_counts = df[df['Type'] == 'FRMISBUILD'].groupby('Historical Week').size()
+        misbuilds_counts = misbuilds_counts.reindex(df_weekly['Week'], fill_value=0)
+        # 2. Calcular el promedio móvil de 4 semanas
+        misbuilds_4wk_avg = misbuilds_counts.rolling(window=4, min_periods=1).mean()
+        # Crear figura y eje principal (misbuilds)
+        fig, ax1 = plt.subplots(figsize=(12, 6))
 
-    # Gráfico de Misbuilds (eje izquierdo - rojo)
-    ax1.plot(misbuilds_counts.index, misbuilds_counts.values, 
-            label='Total Misbuilds', 
-            color='red', 
-            marker='s', 
-            linestyle='--', 
-            linewidth=2)
+        # Gráfico de Misbuilds (eje izquierdo - rojo)
+        ax1.plot(misbuilds_counts.index, misbuilds_counts.values, 
+                label='Total Misbuilds', 
+                color='red', 
+                marker='s', 
+                linestyle='--', 
+                linewidth=2)
 
-    # Gráfico de Promedio Móvil (eje izquierdo - verde)
-    ax1.plot(misbuilds_4wk_avg.index, misbuilds_4wk_avg.values, 
-            label='4 Week Avg', 
-            color='green', 
-            marker='^', 
-            linestyle='-.', 
-            linewidth=2)
-    ax1.tick_params(axis='y')
-    ax1.grid(True, linestyle='--', alpha=0.3)
+        # Gráfico de Promedio Móvil (eje izquierdo - verde)
+        ax1.plot(misbuilds_4wk_avg.index, misbuilds_4wk_avg.values, 
+                label='4 Week Avg', 
+                color='green', 
+                marker='^', 
+                linestyle='-.', 
+                linewidth=2)
+        ax1.tick_params(axis='y')
+        ax1.grid(True, linestyle='--', alpha=0.3)
 
-    # Crear eje secundario (derecho - azul)
-    ax2 = ax1.twinx()
+        # Crear eje secundario (derecho - azul)
+        ax2 = ax1.twinx()
 
-    # Gráfico de Total de ordenes (eje derecho - azul)
-    ax2.plot(df_weekly['Week'], df_weekly['Total Orders'], 
-            label='Total Orders', 
-            color='blue', 
-            marker='o', 
-            linestyle='-', 
-            linewidth=2)
-    ax2.tick_params(axis='y')
+        # Gráfico de Total de ordenes (eje derecho - azul)
+        ax2.plot(df_weekly['Week'], df_weekly['Total Orders'], 
+                label='Total Orders', 
+                color='blue', 
+                marker='o', 
+                linestyle='-', 
+                linewidth=2)
+        ax2.tick_params(axis='y')
 
-    # Título y leyenda unificada
-    plt.title('Misbuilds and Orders over Time', fontsize=14, pad=20)
+        # Título y leyenda unificada
+        plt.title('Misbuilds and Orders over Time', fontsize=14, pad=20)
 
-    # Combinar leyendas
-    lines1, labels1 = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, fontsize=10, loc='upper left')
+        # Combinar leyendas
+        lines1, labels1 = ax1.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax1.legend(lines1 + lines2, labels1 + labels2, fontsize=10, loc='upper left')
 
-    # Ajustar formato
-    plt.xticks(rotation=45)
-    fig.tight_layout()
+        # Ajustar formato
+        plt.xticks(rotation=45)
+        fig.tight_layout()
 
-    # Guardar imagen temporal
-    plt.savefig("graphic2.png", dpi=300)
-    plt.close()
+        # Guardar imagen temporal
+        plt.savefig("graphic2.png", dpi=300)
+        plt.close()
 
-    # Insertar la imagen (gráfica)
-    story.append(Spacer(width=0, height=1.5*cm))
-    story.append(Image("graphic2.png", width=750, height=300)) 
+        # Insertar la imagen (gráfica)
+        story.append(Spacer(width=0, height=1.5*cm))
+        story.append(Image("graphic2.png", width=750, height=300)) 
 
         # Función para dibujar el fondo
     def draw_cover(canvas, doc):
