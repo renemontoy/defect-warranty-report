@@ -511,7 +511,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # Suma de ordenes por semana historico
     weekly_orders_totals_hist = df_weekly8.set_index('Week')['Total Orders']
     # Errores de Warranty
-    orders_hist = pd.crosstab(df['Type'], df['Historical Week'])
+    orders_hist = pd.crosstab(dfwarranty['Type'], df['Historical Week'])
     # Division porcentual
     orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
 
@@ -708,6 +708,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
             ('FONTSIZE', (0,0), (-1,-1), 12),
             ('TEXTCOLOR', (0,0), (-1,-1), rl_colors.red)
         ]))
+        story.append(misbuild_table)
     else: 
         misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
         misbuild_data += df_misbuild.values.tolist()    # Datos
