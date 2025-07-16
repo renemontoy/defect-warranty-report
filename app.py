@@ -664,6 +664,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         'Claim Type (Description)' : 'Description'
     }
     df_semana_actual = df_semana_actual.rename(columns=rename_columns)
+    df_semana_actual = df_semana_actual.sort_values(by="Type")
     semana_actual_data = [df_semana_actual.columns.tolist()]  # Encabezados
     semana_actual_data += df_semana_actual.values.tolist()    # Datos
     semana_actual_table = Table(semana_actual_data,repeatRows=2)
