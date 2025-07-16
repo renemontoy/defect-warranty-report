@@ -511,12 +511,12 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # Suma de ordenes por semana historico
     weekly_orders_totals_hist = df_weekly8.set_index('Week')['Total Orders']
     # Errores de Warranty
-    orders_hist = pd.crosstab(dfwarranty['Type'], dfwarranty['Historical Week'])
+    orders_hist = pd.crosstab(dfwarranty['Type'], df['Historical Week'])
     # Division porcentual
     orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
 
     orders_pct_hist['TOTAL'] = orders_pct_hist.sum(axis=1)
-    valid_weeks = orders_pct_hist.notnull().sum(axis=1)
+    valid_weeks = orders_pct_hist.notnull().sum(axis=1) -1
     orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / valid_weeks).astype(float)
     avg_orders_pct_hist= orders_pct_hist[['AVG','TOTAL']].copy()
 
