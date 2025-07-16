@@ -706,7 +706,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         misbuild_table.setStyle(TableStyle([
             ('ALIGN', (0,0), (-1,-1), 'CENTER'),
             ('FONTSIZE', (0,0), (-1,-1), 12),
-            ('TEXTCOLOR', (0,0), (-1,-1), colors.red)
+            ('TEXTCOLOR', (0,0), (-1,-1), rl_colors.red)
         ]))
     else: 
         misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
