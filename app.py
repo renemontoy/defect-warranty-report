@@ -106,7 +106,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         "Complete Head Shaft Separation" : "FRMISBUILD",
         "Goop in Hosel" : "FRMISBUILD",
         "Grip Alignment" : "FRMISBUILD",
-        "Loose Putter Hosel" : "FRMISBUILD",
+        "Loose Putter Hosel" : "FRDEFECT",
         "Loose Shaft / Rattle" : "FRMISBUILD",
         "Assembly - Wrong Component" : "FRMISBUILD",
         "Misbuild - Loft, Lie, Swingweight" : "FRMISBUILD",
