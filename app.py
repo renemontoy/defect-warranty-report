@@ -511,7 +511,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # Suma de ordenes por semana historico
     weekly_orders_totals_hist = df_weekly8.set_index('Week')['Total Orders']
     # Errores de Warranty
-    orders_hist = pd.crosstab(dfwarranty['Type'], df['Historical Week'])
+    orders_hist = pd.crosstab(df['Type'], df['Historical Week'])
     # Division porcentual
     orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
 
