@@ -523,7 +523,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     #METODO DE TOTALES
     total_errores_hist = orders_hist.sum().sum()
     total_ordenes_hist = weekly_orders_totals_hist.sum()
-    avg_weekly_pct_hist = (total_errores_hist / total_ordenes_hist) * 100
+    avg_weekly_pct_hist = np.round((total_errores_hist / total_ordenes_hist) * 100, 1)
 
     # Division porcentual
     orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
@@ -545,7 +545,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     #avg_weekly_pct_hist = orders_pct_hist[orders_hist.columns].mean().sum()
     total_errors_hist = orders_pct_hist[orders_hist.columns].sum().sum() 
     avg_orders_data_hist.append([
-        f"{avg_weekly_pct_hist.mean().round(1)}%",  
+        f"{avg_weekly_pct_hist.mean()}%",  
         f"{total_errors_hist.mean().round(1)}%"           
     ])
     num_filas_avg_opct_hist = len(avg_orders_data_hist)
@@ -557,9 +557,6 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(orders_joined)
 
     story.append(PageBreak())
-    print(f"Errores totales: {total_errores_hist}")
-    print(f"Órdenes totales: {total_ordenes_hist}")
-    print(f"Porcentaje crudo: {(total_errores_hist / total_ordenes_hist) * 100}")
 
     #Grafica
     #DATA
