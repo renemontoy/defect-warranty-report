@@ -481,27 +481,27 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     orders_table = Table(orders_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights)
     orders_table.setStyle(TableStyle(table_style))
 
+    #METODO DE TOTALES
+    total_errores = orders.sum().sum()
+    total_ordenes = weekly_orders_totals.sum()
+    avg_weekly_pct = (total_errores / total_ordenes) * 100
+
     #Avg Orders %
     orders_pct['TOTAL'] = orders_pct[week_cols].sum(axis=1)
-    non_null_weeks_orders = orders_pct[week_cols].notnull().sum(axis=1)
-    orders_pct['AVG'] = (orders_pct['TOTAL'] / non_null_weeks_orders).astype(float)
+    # CORRECCIÓN: Calcula el AVG correctamente (errores totales de categoría / total órdenes)
+    errores_por_categoria = dfwarranty['Type'].value_counts()
+    orders_pct['AVG'] = (errores_por_categoria / total_ordenes) * 100
+
     avg_orders_pct= orders_pct[['AVG','TOTAL']].copy()
 
     #Formateo
-    avg_orders_pct['AVG'] = (avg_orders_pct['AVG']).round(1).astype(str) + '%'
+    avg_orders_pct['AVG'] = (avg_orders_pct['AVG']).round(4).astype(str) + '%'
     avg_orders_pct['TOTAL'] = (avg_orders_pct['TOTAL']).round(1).astype(str) + '%'
 
     #Tabla 4 weeks
     avg_orders_data = [['Last 4 Weeks']]
     avg_orders_data += [list(avg_orders_pct.columns)]
     avg_orders_data += avg_orders_pct.values.tolist()
-
-    #avg_weekly_pct = orders_pct[week_cols].mean().sum()
-
-    #METODO DE TOTALES
-    total_errores = orders.sum().sum()
-    total_ordenes = weekly_orders_totals.sum()
-    avg_weekly_pct = (total_errores / total_ordenes) * 100
 
     total_errors = sum_pct[week_cols].sum()
     avg_orders_data.append([
@@ -523,29 +523,29 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     #METODO DE TOTALES
     total_errores_hist = orders_hist.sum().sum()
     total_ordenes_hist = weekly_orders_totals_hist.sum()
-    avg_weekly_pct_hist = np.round((total_errores_hist / total_ordenes_hist) * 100, 1)
+    avg_weekly_pct_hist = (total_errores_hist / total_ordenes_hist) * 100
 
     # Division porcentual
     orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
 
     orders_pct_hist['TOTAL'] = orders_pct_hist.sum(axis=1)
 
-    valid_weeks = orders_pct_hist.notnull().sum(axis=1) -1
-    orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / valid_weeks).astype(float)
-    avg_orders_pct_hist= orders_pct_hist[['AVG','TOTAL']].copy()
+    # CORRECCIÓN: Calcula el AVG correctamente (errores totales de categoría / total órdenes)
+    orders_pct_hist['AVG'] = (errores_por_categoria / total_ordenes_hist) * 100
 
-    #Formateo
-    avg_orders_pct_hist['AVG'] = (avg_orders_pct_hist['AVG']).astype(str) + '%'
-    avg_orders_pct_hist['TOTAL'] = (avg_orders_pct_hist['TOTAL']).round(1).astype(str) + '%'
+    avg_orders_pct_hist = orders_pct_hist[['AVG','TOTAL']].copy()
+
+    # Formateo
+    avg_orders_pct_hist['AVG'] = avg_orders_pct_hist['AVG'].round(4).astype(str) + '%'
+    avg_orders_pct_hist['TOTAL'] = avg_orders_pct_hist['TOTAL'].round(1).astype(str) + '%'
 
     #Tabla Running
     avg_orders_data_hist = [['Runnig Total']]
     avg_orders_data_hist += [list(avg_orders_pct_hist.columns)]
     avg_orders_data_hist += avg_orders_pct_hist.values.tolist()
-    #avg_weekly_pct_hist = orders_pct_hist[orders_hist.columns].mean().sum()
     total_errors_hist = orders_pct_hist[orders_hist.columns].sum().sum() 
     avg_orders_data_hist.append([
-        f"{avg_weekly_pct_hist.mean()}%",  
+        f"{avg_weekly_pct_hist.round(1)}%",  
         f"{total_errors_hist.mean().round(1)}%"           
     ])
     num_filas_avg_opct_hist = len(avg_orders_data_hist)
