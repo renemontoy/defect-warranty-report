@@ -557,6 +557,9 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(orders_joined)
 
     story.append(PageBreak())
+    print(f"Errores totales: {total_errores_hist}")
+    print(f"Órdenes totales: {total_ordenes_hist}")
+    print(f"Porcentaje crudo: {(total_errores_hist / total_ordenes_hist) * 100}")
 
     #Grafica
     #DATA
