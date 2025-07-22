@@ -495,7 +495,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_pct= orders_pct[['AVG','TOTAL']].copy()
 
     #Formateo
-    avg_orders_pct['AVG'] = (avg_orders_pct['AVG']).round(4).astype(str) + '%'
+    avg_orders_pct['AVG'] = (avg_orders_pct['AVG']).round(1).astype(str) + '%'
     avg_orders_pct['TOTAL'] = (avg_orders_pct['TOTAL']).round(1).astype(str) + '%'
 
     #Tabla 4 weeks
@@ -536,7 +536,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_pct_hist = orders_pct_hist[['AVG','TOTAL']].copy()
 
     # Formateo
-    avg_orders_pct_hist['AVG'] = avg_orders_pct_hist['AVG'].round(4).astype(str) + '%'
+    avg_orders_pct_hist['AVG'] = avg_orders_pct_hist['AVG'].round(1).astype(str) + '%'
     avg_orders_pct_hist['TOTAL'] = avg_orders_pct_hist['TOTAL'].round(1).astype(str) + '%'
 
     #Tabla Running
