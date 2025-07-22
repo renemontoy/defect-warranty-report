@@ -302,7 +302,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_warranty_table8 = Table(avg_warranty_data8, colWidths=[60,60],rowHeights=row_heights_w8)
     avg_warranty_table8.setStyle(TableStyle(table_style_weeks))
     #Second Tables
-    joined_warranty = Table([[warranty_table,  avg_warranty_table,avg_warranty_table8]])
+    joined_warranty = Table([[warranty_table,avg_warranty_table,avg_warranty_table8]])
     story.append(joined_warranty)
 
     #ORDENES Y PRODUCCION
@@ -495,7 +495,9 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_data = [['Last 4 Weeks']]
     avg_orders_data += [list(avg_orders_pct.columns)]
     avg_orders_data += avg_orders_pct.values.tolist()
+
     avg_weekly_pct = orders_pct[week_cols].mean().sum()
+
     total_errors = sum_pct[week_cols].sum()
     avg_orders_data.append([
         f"{avg_weekly_pct.mean().round(1)}%",  
@@ -512,12 +514,19 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     weekly_orders_totals_hist = df_weekly8.set_index('Week')['Total Orders']
     # Errores de Warranty
     orders_hist = pd.crosstab(dfwarranty['Type'], df['Historical Week'])
+
+    #METODO DE TOTALES
+    total_errores_hist = orders_hist.sum().sum()
+    total_ordenes_hist = weekly_orders_totals_hist.sum()
+    avg_weekly_pct_hist = (total_errores_hist / total_ordenes_hist) * 100
+
     # Division porcentual
     orders_pct_hist = (orders_hist.div(weekly_orders_totals_hist) * 100)
 
     orders_pct_hist['TOTAL'] = orders_pct_hist.sum(axis=1)
     valid_weeks = orders_pct_hist.notnull().sum(axis=1) -1
     orders_pct_hist['AVG'] = (orders_pct_hist['TOTAL'] / valid_weeks).astype(float)
+    
     avg_orders_pct_hist= orders_pct_hist[['AVG','TOTAL']].copy()
 
     #Formateo
@@ -528,7 +537,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_orders_data_hist = [['Runnig Total']]
     avg_orders_data_hist += [list(avg_orders_pct_hist.columns)]
     avg_orders_data_hist += avg_orders_pct_hist.values.tolist()
-    avg_weekly_pct_hist = orders_pct_hist[orders_hist.columns].mean().sum()
+    #avg_weekly_pct_hist = orders_pct_hist[orders_hist.columns].mean().sum()
     total_errors_hist = orders_pct_hist[orders_hist.columns].sum().sum() 
     avg_orders_data_hist.append([
         f"{avg_weekly_pct_hist.mean().round(1)}%",  
