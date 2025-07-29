@@ -700,7 +700,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # Formatear solo las fechas válidas (dejando nulos como están)
     df_semana_actual['Original Sales Order Date'] = df_semana_actual['Original Sales Order Date'].apply(
         lambda x: x.strftime('%m/%d/%Y') if not pd.isna(x) else None)
-    #df_semana_actual["Pod Number"] = df_semana_actual["Pod Number"].astype("Int64")
+    df_semana_actual["Pod Number"] = df_semana_actual["Pod Number"].astype("Int64")
     rename_columns = {
         'Date:': 'Date',
         'Historical Week': 'Week',
