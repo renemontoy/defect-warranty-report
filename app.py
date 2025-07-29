@@ -224,6 +224,19 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('BACKGROUND', (0,-2), (-1,-1), rl_colors.lightgrey),
         ('FONTNAME',(0,-2),(-1,-1),'Helvetica-Bold'),
     ]
+
+        # Título
+    styles = getSampleStyleSheet()
+    custom_title_style = ParagraphStyle(
+        name='CustomTitle',
+        parent=styles['Title'],
+        fontName='Helvetica',
+        fontSize=22,
+        leading=30,
+        textColor=rl_colors.black,
+        alignment=TA_LEFT,  
+    )
+
     current_week_num = int(semana_seleccionada.replace('Week ', ''))
     fourweeks = [f'Week {i}' for i in range(current_week_num-3, current_week_num+1)]
     eightweeks = [f'Week {i}' for i in range(current_week_num-7, current_week_num+1)]
@@ -568,6 +581,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(PageBreak())
 
     #Grafica
+    story.append(Paragraph("Returns per Week by Reason Code", custom_title_style))
     #DATA
     #Warranty Details
     warranty_hist1 = pd.crosstab(df['Type'], df['Historical Week'])
@@ -618,7 +632,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
                 label=idx)
 
     # 7. Personalización del gráfico
-    plt.title('Returns per Week by Reason Code', fontsize=16, pad=20)
+    #plt.title('Returns per Week by Reason Code', fontsize=16, pad=20)
     plt.xlabel('Week', fontsize=12)
     plt.ylabel('Number of Returns', fontsize=12)
     plt.xticks(rotation=45)
@@ -676,18 +690,6 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(PageBreak())
 
     #TABLA SEMANA ACTUAL
-    # Título
-    styles = getSampleStyleSheet()
-    custom_title_style = ParagraphStyle(
-        name='CustomTitle',
-        parent=styles['Title'],
-        fontName='Helvetica',
-        fontSize=22,
-        leading=30,
-        textColor=rl_colors.black,
-        alignment=TA_LEFT,  
-    )
-
     story.append(Paragraph("Warranty Defects", custom_title_style))
     df_semana_actual = df[df['Historical Week'].str.strip() == semana_actual.strip()].copy()
     df_semana_actual = df_semana_actual[df_semana_actual['Staged'] == 'Warranty']
@@ -721,6 +723,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(PageBreak())
 
     #Resumen de ordenes
+    story.append(Paragraph("Assembly Clubs and Orders Over Time", custom_title_style))
     df_weekly8 = prod8.groupby('Historical Week', as_index=False).agg({
         'Orders': 'sum',
         'ShippedQty': 'sum',
@@ -860,6 +863,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         story.append(PageBreak())
 
         # HISTORICO MISBUILDS
+        story.append(Paragraph("Misbuilds Over Time", custom_title_style))
         count_misbuilds8 = df8[df8['Type'] == 'FRMISBUILD']
         rename_columns_misbuilds8 = {
             'Claim Type (Description)': 'Description',
@@ -899,6 +903,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         story.append(graphic_joined_mis8)
 
         #GRAFICA
+        story.append(Paragraph("Misbuilds and Orders Over Time", custom_title_style))
         # Gráfico de líneas
         misbuilds_counts = df[df['Type'] == 'FRMISBUILD'].groupby('Historical Week').size()
         misbuilds_counts = misbuilds_counts.reindex(df_weekly['Week'], fill_value=0)
@@ -938,7 +943,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ax2.tick_params(axis='y')
 
         # Título y leyenda unificada
-        plt.title('Misbuilds and Orders over Time', fontsize=14, pad=20)
+        #plt.title('Misbuilds and Orders over Time', fontsize=14, pad=20)
 
         # Combinar leyendas
         lines1, labels1 = ax1.get_legend_handles_labels()
