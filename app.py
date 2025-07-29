@@ -694,13 +694,13 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_semana_actual = df_semana_actual[["Date:", "Historical Week",  "Shipper:", "Original Order or Serial #","RMA", "RC",
                                          "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop", "Original Sales Order Date"]]
     df_semana_actual['Date:'] = pd.to_datetime(df_semana_actual['Date:']).dt.strftime('%m/%d/%Y')
-    df_semana_actual['Original Sales Order Date'] = pd.to_datetime(
-    df_semana_actual['Original Sales Order Date'], 
-    errors='coerce')
+    #df_semana_actual['Original Sales Order Date'] = pd.to_datetime(
+    #df_semana_actual['Original Sales Order Date'], 
+    #errors='coerce')
     # Formatear solo las fechas válidas (dejando nulos como están)
-    df_semana_actual['Original Sales Order Date'] = df_semana_actual['Original Sales Order Date'].apply(
-        lambda x: x.strftime('%m/%d/%Y') if not pd.isna(x) else None)
-
+    #df_semana_actual['Original Sales Order Date'] = df_semana_actual['Original Sales Order Date'].apply(
+    #    lambda x: x.strftime('%m/%d/%Y') if not pd.isna(x) else None)
+    #df_semana_actual["Pod Number"] = df_semana_actual["Pod Number"].astype("Int64")
     rename_columns = {
         'Date:': 'Date',
         'Historical Week': 'Week',
@@ -710,7 +710,6 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         'Original Build Shop': 'Warehouse',
         'Original Sales Order Date':'Build Date'
     }
-    #df_semana_actual["Pod"] = df_semana_actual["Pod"].astype("Int64")
     df_semana_actual = df_semana_actual.rename(columns=rename_columns)
     df_semana_actual = df_semana_actual.sort_values(by="Type")
     df_semana_actual = df_semana_actual.fillna("-")
