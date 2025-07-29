@@ -135,7 +135,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df["Type"] = df["Claim Type (Description)"].map(defect_type)
 
     df = df[["Date:", "Historical Week", "Year Week", "Shipper:", "Original Order or Serial #", "RMA", "RC", "Status? (0,1,2)","Shipping Carrier","Tracking Number",
-            "Staged", "Make / Model", "Claim Type (Description)", "Type", "Pod Number", "Original Sales Order Date" ]]
+            "Staged", "Make / Model", "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop","Original Sales Order Date" ]]
 
     #Crear PDF
     pdf_buffer = io.BytesIO()
