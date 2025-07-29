@@ -761,7 +761,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ]))
         story.append(misbuild_table)
     else: 
-        story.append(Paragraph("Misbuilds Over Time", custom_title_style))
+        story.append(Paragraph("Misbuilds Summary", custom_title_style))
         misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
         misbuild_data += df_misbuild.values.tolist()    # Datos
         misbuild_table = Table(misbuild_data)
