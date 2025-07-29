@@ -143,7 +143,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story = []
     story.append(PageBreak())
     table_style = [
-        ('FONTSIZE', (0,0), (-1,-1), 9), 
+        ('FONTSIZE', (0,0), (-1,-1), 8.5), 
         ('SPAN', (0, 0), (-1, 0)), #Add title
         ('BACKGROUND', (0,0), (-1,0), rl_colors.darkgrey),
         ('ALIGN',(0,0),(-1,0),'CENTER'),
@@ -155,7 +155,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('FONTNAME',(0,-1),(-1,-1),'Helvetica-Bold'),
     ]
     table_style_semana_actual = [
-        ('FONTSIZE', (0,0), (-1,-1), 9), 
+        ('FONTSIZE', (0,0), (-1,-1), 8.5), 
         ('BACKGROUND', (0,0), (-1,0), rl_colors.darkgrey),
         ('ALIGN',(0,0),(-1,0),'CENTER'),
         ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),
@@ -164,7 +164,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('GRID',(0,0),(-1,-1),0.5,rl_colors.black),
     ]
     table_style_graphic = [
-        ('FONTSIZE', (0,0), (-1,-1), 9), 
+        ('FONTSIZE', (0,0), (-1,-1), 8.5), 
         ('BACKGROUND', (0,0), (-1,0), rl_colors.darkgrey),
         ('ALIGN',(0,0),(-1,0),'CENTER'),
         ('FONTNAME',(0,0),(-1,1),'Helvetica-Bold'),
@@ -175,7 +175,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('FONTNAME',(0,-1),(-1,-1),'Helvetica-Bold'),
     ]
     table_style_graphic2 = [
-        ('FONTSIZE', (0,0), (-1,-1), 9), 
+        ('FONTSIZE', (0,0), (-1,-1), 8.5), 
         ('BACKGROUND', (0,0), (-1,0), rl_colors.darkgrey),
         ('ALIGN',(0,0),(-1,0),'CENTER'),
         ('FONTNAME',(0,0),(-1,1),'Helvetica-Bold'),
@@ -187,7 +187,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     ]
 
     table_style_weeks = [
-        ('FONTSIZE', (0,0), (-1,-1), 9), 
+        ('FONTSIZE', (0,0), (-1,-1), 8.5), 
         ('SPAN', (0, 0), (-1, 0)), #Add title
         ('BACKGROUND', (0,0), (-1,0), rl_colors.darkgrey),
         ('ALIGN',(0,0),(-1,0),'CENTER'),
@@ -199,7 +199,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('FONTNAME',(0,-2),(-1,-1),'Helvetica-Bold'),
     ]
     prod_style = [
-        ('FONTSIZE', (0,0), (-1,-1), 9), 
+        ('FONTSIZE', (0,0), (-1,-1), 8.5), 
         ('SPAN', (0, 0), (-1, 0)), #Add title
         ('BACKGROUND', (0,0), (-1,0), rl_colors.darkgrey),
         ('ALIGN',(0,0),(-1,0),'CENTER'),
@@ -211,7 +211,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('FONTNAME',(0,-2),(-1,-1),'Helvetica-Bold'),
     ]
     prod_style_weeks = [
-        ('FONTSIZE', (0,0), (-1,-1), 9), 
+        ('FONTSIZE', (0,0), (-1,-1), 8.5), 
         ('SPAN', (0, 0), (-1, 0)), #Add title
         ('SPAN', (0,2), (-1,2)),
         ('SPAN', (0,3), (-1,3)),
@@ -460,7 +460,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         [f"{avg_orders8:,}", f"{total_orders8:,}"]   # Fila Orders
     ]
     num_filas_avg_prod8 = len(avg_prod_data8)
-    row_heights_avg_prod8 = [13] * num_filas_avg_prod8 
+    row_heights_avg_prod8 = [grh] * num_filas_avg_prod8 
     avg_prod_table8 = Table(avg_prod_data8, colWidths=[60,60], rowHeights=row_heights_avg_prod8)
     avg_prod_table8.setStyle(TableStyle(prod_style_weeks))
     joined_prod = Table([[prod_tabla, avg_prod_table,avg_prod_table8]])
