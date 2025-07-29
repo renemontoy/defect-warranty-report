@@ -866,7 +866,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         # 3. Crear tabla de historial
         num_filas_misbuilds8 = len(count_misbuilds_data8)
         row_heights_mis8 = [grh] * num_filas_misbuilds8
-        count_misbuilds_table8 = Table(count_misbuilds_data8, colWidths=[120, 58, 58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_mis8)
+        count_misbuilds_table8 = Table(count_misbuilds_data8, colWidths=[150, 58, 58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_mis8)
         count_misbuilds_table8.setStyle(TableStyle(table_style_graphic))
         # 4. Calcular los datos de resumen
         mb_last_8_weeks = count_misbuilds8.iloc[:, -8:].sum(axis=1) #if len(warranty_hist8.columns) <= 8 else pd.Series(0, index=warranty_hist8.index)
