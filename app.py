@@ -77,6 +77,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
 
     semana_actual = semana_seleccionada
 
+    grh = 11
+
     #Catalogo de defectos
     defect_type = {
         "New 60* Day Reshaft Policy - Customer Service":"FR30DAYRESHAFT",
@@ -240,7 +242,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         staged_data.append([idx] + row.astype(int).astype(str).tolist())
     #Tabla
     num_filas_staged = len(staged_data)
-    row_heights_staged = [13] * num_filas_staged
+    row_heights_staged = [grh] * num_filas_staged
     staged_table = Table(staged_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_staged)
     staged_table.setStyle(TableStyle(table_style))
 
@@ -258,7 +260,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_data += [list(avg.columns)]
     avg_data += avg.values.tolist()
     num_filas_staged_avg = len(avg_data)
-    row_heights_staged_avg = [13] * num_filas_staged_avg 
+    row_heights_staged_avg = [11] * num_filas_staged_avg 
     avg_table = Table(avg_data, colWidths=[60,60], rowHeights=row_heights_staged_avg)
     avg_table.setStyle(TableStyle(table_style_weeks))
     #First Two Tables
@@ -275,7 +277,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         warranty_data.append([idx] + row.astype(int).astype(str).tolist())
     #Tabla
     num_filas_w = len(warranty_data)
-    row_heights_w = [13] * num_filas_w
+    row_heights_w = [11] * num_filas_w
     warranty_table = Table(warranty_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_w)
     warranty_table.setStyle(TableStyle(table_style))
 
@@ -289,7 +291,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_warranty_data += [list(avg_warranty.columns)]
     avg_warranty_data += avg_warranty.values.tolist()
     num_filas_avg_w = len(avg_warranty_data)
-    row_heights_avg_W = [13] * num_filas_avg_w
+    row_heights_avg_W = [11] * num_filas_avg_w
     avg_warranty_table = Table(avg_warranty_data, colWidths=[60,60], rowHeights=row_heights_avg_W)
     avg_warranty_table.setStyle(TableStyle(table_style_weeks))
     #Tabla 8 weeks
