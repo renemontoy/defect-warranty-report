@@ -769,7 +769,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         #Tabla
         num_filas_cm = len(count_misbuilds_data)
         row_heights_cm = [grh] * num_filas_cm
-        count_misbuilds_table = Table(count_misbuilds_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_cm)
+        count_misbuilds_table = Table(count_misbuilds_data, colWidths=[150, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_cm)
         count_misbuilds_table.setStyle(TableStyle(table_style))
 
         #Avg Details
