@@ -4,6 +4,8 @@ from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak, Image
 import numpy as np
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.units import cm 
 import matplotlib.pyplot as plt
 import streamlit as st
@@ -667,15 +669,32 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(PageBreak())
 
     #TABLA SEMANA ACTUAL
+    # Título
+    styles = getSampleStyleSheet()
+    custom_title_style = ParagraphStyle(
+        name='CustomTitle',
+        parent=styles['Title'],
+        fontName='Helvetica',
+        fontSize=22,
+        leading=30,
+        textColor=rl_colors.black,
+        alignment=TA_LEFT,  
+    )
+
+    story.append(Paragraph("Warranty Defects", custom_title_style))
     df_semana_actual = df[df['Historical Week'].str.strip() == semana_actual.strip()].copy()
     df_semana_actual = df_semana_actual[df_semana_actual['Staged'] == 'Warranty']
-    df_semana_actual = df_semana_actual[["Date:", "Historical Week",  "Shipper:", "Original Order or Serial #","RMA", "RC","Shipping Carrier","Staged", "Claim Type (Description)", "Type"]]
+    df_semana_actual = df_semana_actual[["Date:", "Historical Week",  "Shipper:", "Original Order or Serial #","RMA", "RC",
+                                         "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop", "Original Sales Order Date"]]
     df_semana_actual['Date:'] = pd.to_datetime(df_semana_actual['Date:']).dt.strftime('%m/%d/%Y')
     rename_columns = {
         'Date:': 'Date',
         'Historical Week': 'Week',
         'Original Order or Serial #': 'Original Order',
-        'Claim Type (Description)' : 'Description'
+        'Claim Type (Description)' : 'Description',
+        "Pod Number": "Pod",
+        "Original Build Shop":"Wharehouse",
+        "Original Sales Order Date": "Build Date"
     }
     df_semana_actual = df_semana_actual.rename(columns=rename_columns)
     df_semana_actual = df_semana_actual.sort_values(by="Type")
