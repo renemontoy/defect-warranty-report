@@ -702,6 +702,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # Formatear solo las fechas válidas (dejando nulos como están)
     df_semana_actual['Original Sales Order Date'] = df_semana_actual['Original Sales Order Date'].apply(
         lambda x: x.strftime('%m/%d/%Y') if not pd.isna(x) else None)
+    
     rename_columns = {
         'Date:': 'Date',
         'Historical Week': 'Week',
@@ -711,8 +712,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         'Original Build Shop': 'Warehouse',
         'Original Sales Order Date':'Build Date'
     }
-    df_semana_actual["Pod"] = df_semana_actual["Pod"].fillna("0")
     df_semana_actual = df_semana_actual.rename(columns=rename_columns)
+    df_semana_actual["Pod"] = df_semana_actual["Pod"].fillna("0")
     df_semana_actual = df_semana_actual.sort_values(by="Type")
     df_semana_actual = df_semana_actual.fillna("-")
     semana_actual_data = [df_semana_actual.columns.tolist()]  # Encabezados
