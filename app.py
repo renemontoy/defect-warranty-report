@@ -232,7 +232,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         parent=styles['Title'],
         fontName='Helvetica',
         fontSize=20,
-        leading=15,
+        leading=25,
         textColor=rl_colors.black,
         alignment=TA_LEFT,  
     )
@@ -633,8 +633,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
 
     # 7. Personalización del gráfico
     #plt.title('Returns per Week by Reason Code', fontsize=16, pad=20)
-    plt.xlabel('Week', fontsize=12)
-    plt.ylabel('Number of Returns', fontsize=12)
+    #plt.xlabel('Week', fontsize=12)
+    #plt.ylabel('Number of Returns', fontsize=12)
     plt.xticks(rotation=45)
     plt.grid(True, linestyle='--', alpha=0.6)
     plt.legend(title='Outcome', bbox_to_anchor=(1.05, 1), loc='upper left')
@@ -653,7 +653,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     plt.close()
 
     # Insertar la imagen (gráfica)
-    story.append(Image("graphic.png", width=750, height=300))  
+    story.append(Image("graphic.png", width=750, height=250))  
 
 
     # 2. Preparar datos para la tabla de historial
