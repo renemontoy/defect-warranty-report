@@ -685,16 +685,13 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_semana_actual = df[df['Historical Week'].str.strip() == semana_actual.strip()].copy()
     df_semana_actual = df_semana_actual[df_semana_actual['Staged'] == 'Warranty']
     df_semana_actual = df_semana_actual[["Date:", "Historical Week",  "Shipper:", "Original Order or Serial #","RMA", "RC",
-                                         "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop", "Original Sales Order Date"]]
+                                         "Claim Type (Description)", "Type"]]
     df_semana_actual['Date:'] = pd.to_datetime(df_semana_actual['Date:']).dt.strftime('%m/%d/%Y')
     rename_columns = {
         'Date:': 'Date',
         'Historical Week': 'Week',
         'Original Order or Serial #': 'Original Order',
-        'Claim Type (Description)' : 'Description',
-        "Pod Number": "Pod",
-        "Original Build Shop":"Wharehouse",
-        "Original Sales Order Date": "Build Date"
+        'Claim Type (Description)' : 'Description'
     }
     df_semana_actual = df_semana_actual.rename(columns=rename_columns)
     df_semana_actual = df_semana_actual.sort_values(by="Type")
