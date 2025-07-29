@@ -231,8 +231,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         name='CustomTitle',
         parent=styles['Title'],
         fontName='Helvetica',
-        fontSize=22,
-        leading=30,
+        fontSize=20,
+        leading=15,
         textColor=rl_colors.black,
         alignment=TA_LEFT,  
     )
@@ -761,6 +761,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ]))
         story.append(misbuild_table)
     else: 
+        story.append(Paragraph("Misbuilds Over Time", custom_title_style))
         misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
         misbuild_data += df_misbuild.values.tolist()    # Datos
         misbuild_table = Table(misbuild_data)
@@ -863,7 +864,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         story.append(PageBreak())
 
         # HISTORICO MISBUILDS
-        story.append(Paragraph("Misbuilds Over Time", custom_title_style))
+        
+        story.append(Paragraph("Misbuilds and Orders Over Time", custom_title_style))
         count_misbuilds8 = df8[df8['Type'] == 'FRMISBUILD']
         rename_columns_misbuilds8 = {
             'Claim Type (Description)': 'Description',
@@ -903,7 +905,6 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         story.append(graphic_joined_mis8)
 
         #GRAFICA
-        story.append(Paragraph("Misbuilds and Orders Over Time", custom_title_style))
         # Gráfico de líneas
         misbuilds_counts = df[df['Type'] == 'FRMISBUILD'].groupby('Historical Week').size()
         misbuilds_counts = misbuilds_counts.reindex(df_weekly['Week'], fill_value=0)
