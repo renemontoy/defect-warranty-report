@@ -77,7 +77,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
 
     semana_actual = semana_seleccionada
 
-    grh = 11
+    grh = 12
 
     #Catalogo de defectos
     defect_type = {
@@ -260,7 +260,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_data += [list(avg.columns)]
     avg_data += avg.values.tolist()
     num_filas_staged_avg = len(avg_data)
-    row_heights_staged_avg = [11] * num_filas_staged_avg 
+    row_heights_staged_avg = [grh] * num_filas_staged_avg 
     avg_table = Table(avg_data, colWidths=[60,60], rowHeights=row_heights_staged_avg)
     avg_table.setStyle(TableStyle(table_style_weeks))
     #First Two Tables
@@ -277,7 +277,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         warranty_data.append([idx] + row.astype(int).astype(str).tolist())
     #Tabla
     num_filas_w = len(warranty_data)
-    row_heights_w = [11] * num_filas_w
+    row_heights_w = [grh] * num_filas_w
     warranty_table = Table(warranty_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_w)
     warranty_table.setStyle(TableStyle(table_style))
 
@@ -291,7 +291,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_warranty_data += [list(avg_warranty.columns)]
     avg_warranty_data += avg_warranty.values.tolist()
     num_filas_avg_w = len(avg_warranty_data)
-    row_heights_avg_W = [11] * num_filas_avg_w
+    row_heights_avg_W = [grh] * num_filas_avg_w
     avg_warranty_table = Table(avg_warranty_data, colWidths=[60,60], rowHeights=row_heights_avg_W)
     avg_warranty_table.setStyle(TableStyle(table_style_weeks))
     #Tabla 8 weeks
@@ -307,7 +307,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     avg_warranty_data8 += [list(avg_warranty8.columns)]
     avg_warranty_data8 += avg_warranty8.values.tolist()
     num_filas_avg_w8 = len(avg_warranty_data8)
-    row_heights_w8 = [13] * num_filas_avg_w8
+    row_heights_w8 = [grh] * num_filas_avg_w8
     avg_warranty_table8 = Table(avg_warranty_data8, colWidths=[60,60],rowHeights=row_heights_w8)
     avg_warranty_table8.setStyle(TableStyle(table_style_weeks))
     #Second Tables
@@ -389,7 +389,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ["Orders"] + [f"{x:,.0f}" for x in df_weekly['Total Orders']]
     ]
     num_filas_prod = len(prod_data)
-    row_heights_prod = [13] * num_filas_prod
+    row_heights_prod = [grh] * num_filas_prod
     prod_tabla = Table(prod_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_prod)
     prod_tabla.setStyle(TableStyle(prod_style))
 
@@ -417,7 +417,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         [f"{avg_orders:,}", f"{total_orders:,}"]   # Fila Orders
     ]
     num_filas_prod_avg = len(avg_prod_data)
-    row_heights_prod_avg = [13] * num_filas_prod_avg 
+    row_heights_prod_avg = [grh] * num_filas_prod_avg 
     avg_prod_table = Table(avg_prod_data, colWidths=[60,60], rowHeights=row_heights_prod_avg)
     avg_prod_table.setStyle(TableStyle(prod_style_weeks))
 
@@ -485,7 +485,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # 5. Añadir fila de totales (opcional)
     orders_data.append(['Order Quality'] + [f"{round(x, 1)}%" for x in sum_pct])
     num_filas = len(orders_data)
-    row_heights = [13] * num_filas 
+    row_heights = [grh] * num_filas 
     #Tabla
     orders_table = Table(orders_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights)
     orders_table.setStyle(TableStyle(table_style))
@@ -518,7 +518,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         f"{total_errors.mean().round(1)}%"           
     ])
     num_filas_avg_opct = len(avg_orders_data)
-    row_heights_avg_opct = [13] * num_filas_avg_opct
+    row_heights_avg_opct = [grh] * num_filas_avg_opct
     avg_orders_table = Table(avg_orders_data, colWidths=[60,60], rowHeights=row_heights_avg_opct)
     avg_orders_table.setStyle(TableStyle(table_style_weeks))
 
@@ -558,7 +558,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         f"{total_errors_hist.mean().round(1)}%"           
     ])
     num_filas_avg_opct_hist = len(avg_orders_data_hist)
-    row_heights_avg_opct_hist = [13] * num_filas_avg_opct_hist
+    row_heights_avg_opct_hist = [grh] * num_filas_avg_opct_hist
     avg_orders_table_hist = Table(avg_orders_data_hist, colWidths=[60,60], rowHeights=row_heights_avg_opct_hist)
     avg_orders_table_hist.setStyle(TableStyle(table_style_weeks))
 
@@ -649,7 +649,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
 
     # 3. Crear tabla de historial
     num_filas_warranty_hist = len(hist_data)
-    row_heights_w_hist = [13] * num_filas_warranty_hist
+    row_heights_w_hist = [grh] * num_filas_warranty_hist
     warranty_table_hist = Table(hist_data, colWidths=[100, 58, 58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_w_hist)
     warranty_table_hist.setStyle(TableStyle(table_style_graphic))
     # 4. Calcular los datos de resumen
@@ -768,7 +768,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
             count_misbuilds_data.append([idx] + row.astype(int).astype(str).tolist())
         #Tabla
         num_filas_cm = len(count_misbuilds_data)
-        row_heights_cm = [13] * num_filas_cm
+        row_heights_cm = [grh] * num_filas_cm
         count_misbuilds_table = Table(count_misbuilds_data, colWidths=[100, 60, 60, 60, 60], repeatRows=1, rowHeights=row_heights_cm)
         count_misbuilds_table.setStyle(TableStyle(table_style))
 
@@ -783,7 +783,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         avg_cm_data += [list(avg_cm.columns)]
         avg_cm_data += avg_cm.values.tolist()
         num_filas_avg_cm = len(avg_cm_data)
-        row_heights_avg_cm = [13] * num_filas_avg_cm
+        row_heights_avg_cm = [grh] * num_filas_avg_cm
         avg_cm_table = Table(avg_cm_data, colWidths=[60,60], rowHeights=row_heights_avg_cm)
         avg_cm_table.setStyle(TableStyle(table_style_weeks))
 
@@ -865,7 +865,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
 
         # 3. Crear tabla de historial
         num_filas_misbuilds8 = len(count_misbuilds_data8)
-        row_heights_mis8 = [13] * num_filas_misbuilds8
+        row_heights_mis8 = [grh] * num_filas_misbuilds8
         count_misbuilds_table8 = Table(count_misbuilds_data8, colWidths=[120, 58, 58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_mis8)
         count_misbuilds_table8.setStyle(TableStyle(table_style_graphic))
         # 4. Calcular los datos de resumen
