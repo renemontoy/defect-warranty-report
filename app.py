@@ -68,7 +68,12 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df["semana_natural"] = (((df["Date:"] - fechainicio2).dt.days // 7) + 1).astype("Int64")
     df["Year Week"] = 'Week ' + df["semana_natural"].astype(str)
     first_nan_index = df[df[["Date:"]].isnull().any(axis=1)].index.min()
-    df = df.iloc[:first_nan_index, :]
+    if pd.isna(first_nan_index):
+        # Si no hay NaN, usar todo el DataFrame
+        df = df.copy()
+    else:
+        # Si hay NaN, cortar el DataFrame hasta ese índice
+        df = df.iloc[:first_nan_index, :]
 
     semana_actual = semana_seleccionada
 
