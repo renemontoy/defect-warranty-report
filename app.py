@@ -800,7 +800,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     plt.close()
 
     # Insertar la imagen (gráfica)
-    story.append(Spacer(width=0, height=1.5*cm))
+    story.append(Spacer(width=0, height=1*cm))
     story.append(Image("graphic3.png", width=750, height=300)) 
 
     story.append(PageBreak())
@@ -819,7 +819,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         story.append(misbuild_table)
     else: 
         story.append(Paragraph("Misbuilds Summary", custom_title_style))
-        story.append(Spacer(width=0, height=1.5*cm))
+        story.append(Spacer(width=0, height=0.3*cm))
         misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
         misbuild_data += df_misbuild.values.tolist()    # Datos
         misbuild_table = Table(misbuild_data)
@@ -1019,7 +1019,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         plt.close()
 
         # Insertar la imagen (gráfica)
-        story.append(Spacer(width=0, height=0.3*cm))
+        story.append(Spacer(width=0, height=1*cm))
         story.append(Image("graphic2.png", width=750, height=300)) 
 
         # Función para dibujar el fondo
