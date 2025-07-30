@@ -12,13 +12,6 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import io
 
-def get_gradient_color(value, min_val, max_val, start_color, end_color):
-    ratio = (value - min_val) / (max_val - min_val) if max_val != min_val else 0.5
-    r = HexColor(start_color).red + ratio * (HexColor(end_color).red - HexColor(start_color).red)
-    g = HexColor(start_color).green + ratio * (HexColor(end_color).green - HexColor(start_color).green)
-    b = HexColor(start_color).blue + ratio * (HexColor(end_color).blue - HexColor(start_color).blue)
-    return rl_colors.Color(r, g, b)
-
 def main():
     st.title("📊 Defect and Warranty Report System")
     
@@ -170,6 +163,15 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ('GRID',(0,0),(-1,-1),0.5,rl_colors.black),
         ('BACKGROUND', (0,-1), (-1,-1), rl_colors.lightgrey),
         ('FONTNAME',(0,-1),(-1,-1),'Helvetica-Bold'),
+    ]
+    table_style_semana_actual_degradado = [
+        ('FONTSIZE', (0,0), (-1,-1), 9), 
+        ('BACKGROUND', (0,0), (-1,0), rl_colors.darkgrey),
+        ('ALIGN',(0,0),(-1,0),'CENTER'),
+        ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),
+        ('ALIGN',(1,1),(-1,-1),'CENTER'),
+        ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
+        ('GRID',(0,0),(-1,-1),0.5,rl_colors.black),
     ]
     table_style_semana_actual = [
         ('FONTSIZE', (0,0), (-1,-1), 9), 
@@ -749,26 +751,29 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     semana_actual_data += df_semana_actual.values.tolist()    # Datos
     semana_actual_table = Table(semana_actual_data,repeatRows=1)
 
-    build_date_col = 6
+    num_rows = len(df_semana_actual)  # número de filas reales de datos (sin encabezado)
+    build_date_col = df_semana_actual.columns.get_loc("Build Date")
 
-    for row_idx, date in enumerate(dates_for_gradient, start=1):  # start=1 para saltar el encabezado
+    for row_idx, date in enumerate(dates_for_gradient, start=1):  # start=1 porque la primera fila es encabezado
+        if row_idx > num_rows:
+            break  # Evitar acceder a una fila que no existe en la tabla
+
         if not pd.isna(date):
-            # Calcular posición en el gradiente (0 a 1)
             ratio = (date - min_date) / (max_date - min_date) if max_date != min_date else 0.5
-            # Crear color del gradiente (azul claro a azul oscuro)
+            inverted_ratio = 1 - ratio
             color = rl_colors.Color(
-                0.1 + 0.5 * ratio,  # R
-                0.5 + 0.3 * ratio,   # G
-                0.9 - 0.3 * ratio    # B
+                0.8 - 0.7 * inverted_ratio,  # Rojo: comienza en 1.0 (amarillo) y disminuye a 0
+                0.7 + 0.1 * inverted_ratio,          # Verde: siempre al máximo (1.0)
+                0.1           # Azul: siempre 0
             )
-            table_style_semana_actual.append(
+            table_style_semana_actual_degradado.append(
                 ('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), color))
         else:
-            # Para fechas nulas (las que mostramos como "-")
-            table_style_semana_actual.append(('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), rl_colors.lightgrey))
+            table_style_semana_actual_degradado.append(
+                ('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), rl_colors.lightgrey))
 
 
-    semana_actual_table.setStyle(TableStyle(table_style_semana_actual))
+    semana_actual_table.setStyle(TableStyle(table_style_semana_actual_degradado))
     story.append(semana_actual_table)
 
     story.append(PageBreak())
