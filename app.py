@@ -659,7 +659,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
                         fontsize=9, color=colors[plot_data.index.get_loc(idx)])
 
     # Guardar imagen temporal
-    plt.savefig("graphic.png", dpi=300)
+    plt.savefig("graphic.png", dpi=600)
     plt.close()
 
     # Insertar la imagen (gráfica)
