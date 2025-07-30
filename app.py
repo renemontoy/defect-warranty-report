@@ -674,7 +674,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     # 3. Crear tabla de historial
     num_filas_warranty_hist = len(hist_data)
     row_heights_w_hist = [grh] * num_filas_warranty_hist
-    warranty_table_hist = Table(hist_data, colWidths=[100, 58, 58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_w_hist)
+    warranty_table_hist = Table(hist_data, colWidths=[100, 58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_w_hist)
     warranty_table_hist.setStyle(TableStyle(table_style_graphic))
     # 4. Calcular los datos de resumen
     last_8_weeks = warranty_hist8.iloc[:, -8:].sum(axis=1) #if len(warranty_hist8.columns) <= 8 else pd.Series(0, index=warranty_hist8.index)
@@ -685,6 +685,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     summary_data = [['Last 4 Weeks', 'Weeks 5-8', 'Dif','Last 8 Weeks']]
     for idx in warranty_hist8.index:
         summary_data.append([
+            idx,
             str(int(last_4_weeks[idx])),
             str(int(weeks_5_to_8[idx])),
             str(int(last_4_weeks[idx])-int(weeks_5_to_8[idx])),
@@ -692,8 +693,8 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ])
 
     # 6. Crear tabla de resumen
-    summary_table = Table(summary_data, colWidths=[58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_w_hist)
-    summary_table.setStyle(TableStyle(table_style_graphic2))
+    summary_table = Table(summary_data, colWidths=[100,58, 58, 58, 58], repeatRows=1, rowHeights=row_heights_w_hist)
+    summary_table.setStyle(TableStyle(table_style_graphic))
     graphic_joined = Table([[warranty_table_hist, summary_table]])
     story.append(graphic_joined)
 
@@ -731,7 +732,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_semana_actual = df_semana_actual.fillna("-")
     semana_actual_data = [df_semana_actual.columns.tolist()]  # Encabezados
     semana_actual_data += df_semana_actual.values.tolist()    # Datos
-    semana_actual_table = Table(semana_actual_data,repeatRows=2)
+    semana_actual_table = Table(semana_actual_data,repeatRows=1)
     semana_actual_table.setStyle(TableStyle(table_style_semana_actual))
     story.append(semana_actual_table)
 
@@ -819,7 +820,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         ]))
         story.append(misbuild_table)
     else: 
-        story.append(Paragraph("Misbuilds Summary", custom_title_style))
+        story.append(Paragraph("Misbuilds Summary Of the Week", custom_title_style))
         story.append(Spacer(width=0, height=0.3*cm))
         misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
         misbuild_data += df_misbuild.values.tolist()    # Datos
