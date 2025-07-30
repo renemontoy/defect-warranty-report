@@ -6,7 +6,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 import numpy as np
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT
-from reportlab.lib.units import cm 
+from reportlab.lib.units import cm, mm 
 import matplotlib.pyplot as plt
 import streamlit as st
 import io
@@ -138,8 +138,17 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
             "Staged", "Make / Model", "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop","Original Sales Order Date" ]]
 
     #Crear PDF
+    margen_izquierdo = 20 * mm
+    margen_derecho = 20 * mm
+    margen_superior = 10 * mm  # Más pequeño para títulos más arriba
+    margen_inferior = 20 * mm
     pdf_buffer = io.BytesIO()
-    doc = SimpleDocTemplate(pdf_buffer, pagesize = landscape(letter))
+    doc = SimpleDocTemplate(pdf_buffer, 
+                            pagesize = landscape(letter),
+                            leftMargin=margen_izquierdo,
+                            rightMargin=margen_derecho,
+                            topMargin=margen_superior,
+                            bottomMargin=margen_inferior)
     story = []
     story.append(PageBreak())
     table_style = [
