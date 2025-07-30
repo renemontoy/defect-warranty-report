@@ -1,5 +1,6 @@
 import pandas as pd
 from reportlab.lib import colors as rl_colors
+from reportlab.lib.colors import HexColor 
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak, Image
@@ -10,6 +11,13 @@ from reportlab.lib.units import cm, mm
 import matplotlib.pyplot as plt
 import streamlit as st
 import io
+
+def get_gradient_color(value, min_val, max_val, start_color, end_color):
+    ratio = (value - min_val) / (max_val - min_val) if max_val != min_val else 0.5
+    r = HexColor(start_color).red + ratio * (HexColor(end_color).red - HexColor(start_color).red)
+    g = HexColor(start_color).green + ratio * (HexColor(end_color).green - HexColor(start_color).green)
+    b = HexColor(start_color).blue + ratio * (HexColor(end_color).blue - HexColor(start_color).blue)
+    return rl_colors.Color(r, g, b)
 
 def main():
     st.title("📊 Defect and Warranty Report System")
@@ -682,7 +690,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     last_4_weeks = warranty_hist8.iloc[:, -4:].sum(axis=1) #if len(warranty_hist8.columns) >= 4 else pd.Series(0, index=warranty_hist8.index)
 
     # 5. Preparar datos para la tabla de resumen
-    summary_data = [['Last 4 Weeks', 'Weeks 5-8', 'Dif','Last 8 Weeks']]
+    summary_data = [['Type','Last 4 Weeks', 'Weeks 5-8', 'Dif','Last 8 Weeks']]
     for idx in warranty_hist8.index:
         summary_data.append([
             idx,
@@ -722,6 +730,12 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     }
     df_semana_actual = df_semana_actual.rename(columns=rename_columns)
     df_semana_actual = df_semana_actual.sort_values(by="Build Date")
+
+    # Convertir fechas a datetime para el degradado (antes de formatear como string)
+    dates_for_gradient = pd.to_datetime(df_semana_actual['Build Date'], errors='coerce')
+    min_date = dates_for_gradient.min()
+    max_date = dates_for_gradient.max()
+
     # Formatear solo las fechas válidas (dejando nulos como están)
     df_semana_actual['Build Date'] = df_semana_actual['Build Date'].apply(
     lambda x: x.strftime('%m/%d/%Y') if not pd.isna(x) else "-")
@@ -730,9 +744,30 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_semana_actual["Pod"] = df_semana_actual["Pod"].astype("Int64")
     df_semana_actual["Pod"] = df_semana_actual["Pod"].astype(str).replace("<NA>", "-")
     df_semana_actual = df_semana_actual.fillna("-")
+    
     semana_actual_data = [df_semana_actual.columns.tolist()]  # Encabezados
     semana_actual_data += df_semana_actual.values.tolist()    # Datos
     semana_actual_table = Table(semana_actual_data,repeatRows=1)
+
+    build_date_col = 6
+
+    for row_idx, date in enumerate(dates_for_gradient, start=1):  # start=1 para saltar el encabezado
+        if not pd.isna(date):
+            # Calcular posición en el gradiente (0 a 1)
+            ratio = (date - min_date) / (max_date - min_date) if max_date != min_date else 0.5
+            # Crear color del gradiente (azul claro a azul oscuro)
+            color = colors.Color(
+                0.1 + 0.5 * ratio,  # R
+                0.5 + 0.3 * ratio,   # G
+                0.9 - 0.3 * ratio    # B
+            )
+            table_style_semana_actual.append(
+                ('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), color))
+        else:
+            # Para fechas nulas (las que mostramos como "-")
+            table_style_semana_actual.append(('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), colors.lightgrey))
+
+
     semana_actual_table.setStyle(TableStyle(table_style_semana_actual))
     story.append(semana_actual_table)
 
