@@ -758,7 +758,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_weekly8_data += df_weekly8.values.tolist()
     df_weekly8_table = Table(df_weekly8_data)
     df_weekly8_table.setStyle(TableStyle(table_style_semana_actual))
-    story.append(Spacer(width=0, height=1.5*cm))
+    story.append(Spacer(width=0, height=1*cm))
     story.append(df_weekly8_table)
 
     #Grafica ASM clubs and orders
@@ -775,7 +775,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
             linestyle='--', 
             linewidth=2)
     ax1.set_ylabel('ASM Clubs', color='black') 
-    ax1.tick_params(axis='y', labelcolor='red')
+    ax1.tick_params(axis='y', labelcolor='black')
     # Gráfico de Total de ordenes (eje derecho - azul)
     ax2.plot(df_weekly8['Week'], df_weekly8['ASM Orders'], 
             label='ASM Orders', 
@@ -784,7 +784,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
             linestyle='-', 
             linewidth=2)
     ax2.set_ylabel('ASM Orders', color='black')  
-    ax2.tick_params(axis='y', labelcolor='blue')
+    ax2.tick_params(axis='y', labelcolor='black')
 
     # Combinar leyendas
     lines1, labels1 = ax1.get_legend_handles_labels()
@@ -819,6 +819,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         story.append(misbuild_table)
     else: 
         story.append(Paragraph("Misbuilds Summary", custom_title_style))
+        story.append(Spacer(width=0, height=1.5*cm))
         misbuild_data = [df_misbuild.columns.tolist()]  # Encabezados
         misbuild_data += df_misbuild.values.tolist()    # Datos
         misbuild_table = Table(misbuild_data)
@@ -923,6 +924,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         # HISTORICO MISBUILDS
         
         story.append(Paragraph("Misbuilds and Orders Over Time", custom_title_style))
+        story.append(Spacer(width=0, height=1*cm))
         count_misbuilds8 = df8[df8['Type'] == 'FRMISBUILD']
         rename_columns_misbuilds8 = {
             'Claim Type (Description)': 'Description',
@@ -1017,7 +1019,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         plt.close()
 
         # Insertar la imagen (gráfica)
-        story.append(Spacer(width=0, height=1.5*cm))
+        story.append(Spacer(width=0, height=1*cm))
         story.append(Image("graphic2.png", width=750, height=300)) 
 
         # Función para dibujar el fondo
