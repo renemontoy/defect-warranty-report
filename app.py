@@ -255,6 +255,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df4 = df[df['Historical Week'].isin(fourweeks)]
 
     #Staged
+    story.append(Paragraph("Summary", custom_title_style))
     staged = pd.crosstab(df4['Staged'], df4['Historical Week'])
     staged.loc['Total'] = staged.sum(numeric_only=True)
     #Data
