@@ -647,7 +647,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     #plt.ylabel('Number of Returns', fontsize=12)
     plt.xticks(rotation=45)
     plt.grid(True, linestyle='--', alpha=0.6)
-    plt.legend(title='Outcome', bbox_to_anchor=(1.05, 1), loc='upper left',fontsize=13)
+    plt.legend(title='Outcome', bbox_to_anchor=(1.05, 1), loc='upper left',fontsize=12,borderpad=1.5)
     plt.tight_layout()
 
     # 8. Añadir etiquetas de valores
