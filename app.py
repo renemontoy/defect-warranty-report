@@ -758,6 +758,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_weekly8_data += df_weekly8.values.tolist()
     df_weekly8_table = Table(df_weekly8_data)
     df_weekly8_table.setStyle(TableStyle(table_style_semana_actual))
+    story.append(Spacer(width=0, height=1.5*cm))
     story.append(df_weekly8_table)
 
     #Grafica ASM clubs and orders
@@ -773,7 +774,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
             marker='s', 
             linestyle='--', 
             linewidth=2)
-    ax1.set_ylabel('ASM Clubs', color='red') 
+    ax1.set_ylabel('ASM Clubs', color='black') 
     ax1.tick_params(axis='y', labelcolor='red')
     # Gráfico de Total de ordenes (eje derecho - azul)
     ax2.plot(df_weekly8['Week'], df_weekly8['ASM Orders'], 
@@ -782,7 +783,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
             marker='o', 
             linestyle='-', 
             linewidth=2)
-    ax2.set_ylabel('ASM Orders', color='blue')  
+    ax2.set_ylabel('ASM Orders', color='black')  
     ax2.tick_params(axis='y', labelcolor='blue')
 
     # Combinar leyendas
