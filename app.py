@@ -758,7 +758,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_weekly8_data += df_weekly8.values.tolist()
     df_weekly8_table = Table(df_weekly8_data)
     df_weekly8_table.setStyle(TableStyle(table_style_semana_actual))
-    story.append(Spacer(width=0, height=1*cm))
+    story.append(Spacer(width=0, height=0.3*cm))
     story.append(df_weekly8_table)
 
     #Grafica ASM clubs and orders
@@ -924,7 +924,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         # HISTORICO MISBUILDS
         
         story.append(Paragraph("Misbuilds and Orders Over Time", custom_title_style))
-        story.append(Spacer(width=0, height=1*cm))
+        story.append(Spacer(width=0, height=0.3*cm))
         count_misbuilds8 = df8[df8['Type'] == 'FRMISBUILD']
         rename_columns_misbuilds8 = {
             'Claim Type (Description)': 'Description',
@@ -1019,7 +1019,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         plt.close()
 
         # Insertar la imagen (gráfica)
-        story.append(Spacer(width=0, height=1*cm))
+        story.append(Spacer(width=0, height=0.3*cm))
         story.append(Image("graphic2.png", width=750, height=300)) 
 
         # Función para dibujar el fondo
