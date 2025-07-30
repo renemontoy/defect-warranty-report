@@ -765,7 +765,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
                 ('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), color))
         else:
             # Para fechas nulas (las que mostramos como "-")
-            table_style_semana_actual.append(('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), colors.lightgrey))
+            table_style_semana_actual.append(('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), rl_colors.lightgrey))
 
 
     semana_actual_table.setStyle(TableStyle(table_style_semana_actual))
