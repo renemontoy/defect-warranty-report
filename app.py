@@ -756,7 +756,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
             # Calcular posición en el gradiente (0 a 1)
             ratio = (date - min_date) / (max_date - min_date) if max_date != min_date else 0.5
             # Crear color del gradiente (azul claro a azul oscuro)
-            color = colors.Color(
+            color = rl_colors.Color(
                 0.1 + 0.5 * ratio,  # R
                 0.5 + 0.3 * ratio,   # G
                 0.9 - 0.3 * ratio    # B
