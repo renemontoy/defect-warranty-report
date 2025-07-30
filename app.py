@@ -709,9 +709,6 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_semana_actual['Original Sales Order Date'] = pd.to_datetime(
     df_semana_actual['Original Sales Order Date'], 
     errors='coerce')
-    # Formatear solo las fechas válidas (dejando nulos como están)
-    df_semana_actual['Original Sales Order Date'] = df_semana_actual['Original Sales Order Date'].apply(
-        lambda x: x.strftime('%m/%d/%Y') if not pd.isna(x) else None)
     
     rename_columns = {
         'Date:': 'Date',
@@ -723,10 +720,14 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
         'Original Sales Order Date':'Build Date'
     }
     df_semana_actual = df_semana_actual.rename(columns=rename_columns)
+    df_semana_actual = df_semana_actual.sort_values(by="Build Date")
+    # Formatear solo las fechas válidas (dejando nulos como están)
+    df_semana_actual['Build Date'] = df_semana_actual['Build Date'].apply(
+    lambda x: x.strftime('%m/%d/%Y') if not pd.isna(x) else "-")
+    
     df_semana_actual["Pod"] = pd.to_numeric(df_semana_actual["Pod"], errors="coerce")
     df_semana_actual["Pod"] = df_semana_actual["Pod"].astype("Int64")
     df_semana_actual["Pod"] = df_semana_actual["Pod"].astype(str).replace("<NA>", "-")
-    df_semana_actual = df_semana_actual.sort_values(by="Build Date")
     df_semana_actual = df_semana_actual.fillna("-")
     semana_actual_data = [df_semana_actual.columns.tolist()]  # Encabezados
     semana_actual_data += df_semana_actual.values.tolist()    # Datos
