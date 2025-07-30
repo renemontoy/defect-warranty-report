@@ -760,6 +760,48 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df_weekly8_table.setStyle(TableStyle(table_style_semana_actual))
     story.append(df_weekly8_table)
 
+    #Grafica ASM clubs and orders
+    # Crear figura y eje principal
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+    #Segunda Linea
+    ax2= ax1.twinx()
+
+    # Gráfico de Misbuilds (eje izquierdo - rojo)
+    ax1.plot(df_weekly8['Week'], df_weekly8['ASM Clubs'], 
+            label='ASM Clubs', 
+            color='red', 
+            marker='s', 
+            linestyle='--', 
+            linewidth=2)
+    ax1.set_ylabel('ASM Clubs', color='red') 
+    ax1.tick_params(axis='y', labelcolor='red')
+    # Gráfico de Total de ordenes (eje derecho - azul)
+    ax2.plot(df_weekly8['Week'], df_weekly8['ASM Orders'], 
+            label='ASM Orders', 
+            color='blue', 
+            marker='o', 
+            linestyle='-', 
+            linewidth=2)
+    ax2.set_ylabel('ASM Orders', color='blue')  
+    ax2.tick_params(axis='y', labelcolor='blue')
+
+    # Combinar leyendas
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, fontsize=10, loc='upper left')
+
+    # Ajustar formato
+    plt.xticks(rotation=45)
+    fig.tight_layout()
+
+    # Guardar imagen temporal
+    plt.savefig("graphic3.png", dpi=300)
+    plt.close()
+
+    # Insertar la imagen (gráfica)
+    story.append(Spacer(width=0, height=1.5*cm))
+    story.append(Image("graphic3.png", width=750, height=300)) 
+
     story.append(PageBreak())
 
     #Misbuilds
