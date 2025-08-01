@@ -9,7 +9,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.units import cm, mm 
 import matplotlib.pyplot as plt
-import streamlit as st
+import streamlit as st # type: ignore
 import io
 
 def main():
@@ -136,7 +136,7 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     df["Type"] = df["Claim Type (Description)"].map(defect_type)
 
     df = df[["Date:", "Historical Week", "Year Week", "Shipper:", "Original Order or Serial #", "RMA", "RC", "Status? (0,1,2)","Shipping Carrier","Tracking Number",
-            "Staged", "Make / Model", "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop","Original Sales Order Date" ]]
+            "Staged", "Make / Model", "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop","Original Sales Order Date", "Days" ]]
 
     #Crear PDF
     margen_izquierdo = 20 * mm
@@ -711,11 +711,11 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     story.append(PageBreak())
 
     #TABLA SEMANA ACTUAL
-    story.append(Paragraph("Warranty Defects", custom_title_style))
+    story.append(Paragraph("Warranty Defects Of the Week", custom_title_style))
     df_semana_actual = df[df['Historical Week'].str.strip() == semana_actual.strip()].copy()
     df_semana_actual = df_semana_actual[df_semana_actual['Staged'] == 'Warranty']
-    df_semana_actual = df_semana_actual[["Date:", "Historical Week",  "Shipper:", "Original Order or Serial #","RMA", "RC",
-                                         "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop", "Original Sales Order Date"]]
+    df_semana_actual = df_semana_actual[["Date:", "Shipper:", "Original Order or Serial #","RMA", 
+                                         "Claim Type (Description)", "Type", "Pod Number", "Original Build Shop", "Original Sales Order Date","Days"]]
     df_semana_actual['Date:'] = pd.to_datetime(df_semana_actual['Date:']).dt.strftime('%m/%d/%Y')
     df_semana_actual['Original Sales Order Date'] = pd.to_datetime(
     df_semana_actual['Original Sales Order Date'], 
@@ -723,7 +723,6 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     
     rename_columns = {
         'Date:': 'Date',
-        'Historical Week': 'Week',
         'Original Order or Serial #': 'Original Order',
         'Claim Type (Description)' : 'Description',
         'Pod Number': 'Pod',
@@ -751,26 +750,26 @@ def procesar_archivos(defectFile, productionFile, semana_seleccionada):
     semana_actual_data += df_semana_actual.values.tolist()    # Datos
     semana_actual_table = Table(semana_actual_data,repeatRows=1)
 
-    num_rows = len(df_semana_actual)  # número de filas reales de datos (sin encabezado)
-    build_date_col = df_semana_actual.columns.get_loc("Build Date")
+    #num_rows = len(df_semana_actual)  # número de filas reales de datos (sin encabezado)
+    #build_date_col = df_semana_actual.columns.get_loc("Build Date")
 
-    for row_idx, date in enumerate(dates_for_gradient, start=1):  # start=1 porque la primera fila es encabezado
-        if row_idx > num_rows:
-            break  # Evitar acceder a una fila que no existe en la tabla
+    #for row_idx, date in enumerate(dates_for_gradient, start=1):  # start=1 porque la primera fila es encabezado
+    #    if row_idx > num_rows:
+    #        break  # Evitar acceder a una fila que no existe en la tabla
 
-        if not pd.isna(date):
-            ratio = (date - min_date) / (max_date - min_date) if max_date != min_date else 0.5
-            inverted_ratio = 1 - ratio
-            color = rl_colors.Color(
-                0.8 - 0.7 * inverted_ratio,  # Rojo: comienza en 1.0 (amarillo) y disminuye a 0
-                0.7 + 0.1 * inverted_ratio,          # Verde: siempre al máximo (1.0)
-                0.1           # Azul: siempre 0
-            )
-            table_style_semana_actual_degradado.append(
-                ('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), color))
-        else:
-            table_style_semana_actual_degradado.append(
-                ('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), rl_colors.lightgrey))
+    #    if not pd.isna(date):
+    #        ratio = (date - min_date) / (max_date - min_date) if max_date != min_date else 0.5
+    #        inverted_ratio = 1 - ratio
+    #        color = rl_colors.Color(
+    #            0.8 - 0.7 * inverted_ratio,  # Rojo: comienza en 1.0 (amarillo) y disminuye a 0
+    #            0.7 + 0.1 * inverted_ratio,          # Verde: siempre al máximo (1.0)
+    #            0.1           # Azul: siempre 0
+    #        )
+    #        table_style_semana_actual_degradado.append(
+    #            ('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), color))
+    #    else:
+    #        table_style_semana_actual_degradado.append(
+    #            ('BACKGROUND', (build_date_col, row_idx), (build_date_col, row_idx), rl_colors.lightgrey))
 
 
     semana_actual_table.setStyle(TableStyle(table_style_semana_actual_degradado))
